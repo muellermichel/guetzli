@@ -1,0 +1,18 @@
+<html>
+<div id="header">
+I'm a template!
+<ul>
+{{#menu}}
+<li><a href='{{ url }}'>{{ title }}</a></li>
+{{/menu}}
+</ul>
+Choose Language:
+<ul>
+{{#languages}}
+<li><a href='/{{ id }}/{{ page }}'>{{ language }}</a></li>
+{{/languages}}
+</ul>
+<div id="body">
+{{{ content }}}
+<div>
+</html>

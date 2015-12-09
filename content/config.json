@@ -1,0 +1,20 @@
+{
+	"pagename_by_language_and_title": {
+		"en": {
+			"About Protogrid":"001-about",
+			"Events":"002-events"
+		},
+		"de": {
+			"Über Protogrid":"001-about",
+			"Ereignisse":"002-events",
+			"Speziell für Deutschsprechende":"00Z-special"
+		}
+	},
+	"active_languages": [
+		{"language":"English", "id":"en"},
+		{"language":"German", "id":"de"},
+		{"language":"Spanish", "id":"es"}
+	],
+	"default_page": "001-about",
+	"default_language": "en"
+}
