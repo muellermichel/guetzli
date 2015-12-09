@@ -40,6 +40,7 @@ Features
 4) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
 
 *content/config.json*
+```
     {
       "pagename_by_language_and_title": {
         "en": {
@@ -60,6 +61,7 @@ Features
       "default_page": "001-about",
       "default_language": "en"
     }
+```
 
 Dependencies
 ------------
