@@ -21,6 +21,10 @@
 			{"posts_directory": "blog", "items_per_page": 3}
 		]
 	},
+	"authors_by_shortname": {
+		"mmu": "Michel Müller",
+		"msc": "Mark Schmitz"
+	},
 	"default_page": "001-about",
 	"default_language": "en"
 }
