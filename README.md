@@ -85,6 +85,8 @@ ToDo
 ----
 1) Forms & Mailing support
 
-2) Dockerization
+2) Blogging
+
+3) Dockerization
 
 
