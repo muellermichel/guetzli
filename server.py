@@ -93,8 +93,8 @@ def is_valid_path_component(component):
 		return True
 	return False
 
-@app.route('/', defaults={'page':None, 'language':None})
-@app.route('/<language>', defaults={'page':None})
+@app.route('/', defaults={'page': None, 'language': None})
+@app.route('/<language>', defaults={'page': None})
 @app.route("/<language>/<page>")
 def page_view(page, language):
 	if not is_valid_path_component(page) or not is_valid_path_component(language):

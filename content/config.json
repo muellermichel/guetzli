@@ -2,7 +2,8 @@
 	"pagename_by_language_and_title": {
 		"en": {
 			"About Protogrid":"001-about",
-			"Events":"002-events"
+			"Blog":"002-blog",
+			"Events":"003-events"
 		},
 		"de": {
 			"Über Protogrid":"001-about",
@@ -15,6 +16,11 @@
 		{"language":"German", "id":"de"},
 		{"language":"Spanish", "id":"es"}
 	],
+	"active_post_items_by_pagename": {
+		"002-blog": [
+			{"posts_directory": "blog", "items_per_page": 3}
+		]
+	},
 	"default_page": "001-about",
 	"default_language": "en"
 }
