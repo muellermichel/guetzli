@@ -68,9 +68,9 @@ def get_template():
 def get_page_path(pagename, language):
 	return os.path.join(base_path(), 'content', 'pages', language, pagename) + '.html'
 
-def get_page_content(pagename, language):
-	page, _ = get_file_content(get_page_path(pagename, language))
-	return pystache.render(page, {"language":language})
+def get_page_content(ctx):
+	page, _ = get_file_content(get_page_path(ctx["pagename"], ctx["language"]))
+	return pystache.render(page, ctx)
 
 def get_menu(language, content_config):
 	menu = []
@@ -108,21 +108,20 @@ def page_view(page, language):
 		language = content_config['default_language']
 	pagename = page if page != None else content_config['default_page']
 	is_default_page = pagename == content_config['default_page']
+	ctx = {
+		"pagename": pagename,
+		"language": language,
+		"menu": get_menu(language, content_config),
+		"languages": content_config['active_languages'],
+	}
 	try:
-		page_content = get_page_content(pagename, language)
+		ctx["content"] = get_page_content(ctx)
 	except NotFoundError:
 		if is_default_page:
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))
-	mustache_hash = {
-		"page": pagename,
-		"language": language,
-		"menu": get_menu(language, content_config),
-		"languages": content_config['active_languages'],
-		"content": page_content
-	}
-	return pystache.render(get_template(), mustache_hash)
+	return pystache.render(get_template(), ctx)
 
 if __name__ == "__main__":
 	app.run(debug=True)
