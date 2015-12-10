@@ -1,1 +1,7 @@
 <div>blog-items</div>
+{{#blog_items}}
+<div>
+	<h1>{{ author }} {{ date_particle }} {{ publishing_date }}</h1>
+	<div>{{{ content }}}</div>
+</div>
+{{/blog_items}}

@@ -16,6 +16,9 @@
 		{"language": "German", "id":"de"},
 		{"language": "Spanish", "id":"es"}
 	],
+	"strings_by_template_reference": {
+		"date_particle": {"en": "on", "de": "am"}
+	},
 	"active_post_types_by_pagename": {
 		"002-blog": [
 			{"posts_directory": "blog", "items_per_page": 3}
