@@ -90,11 +90,10 @@ def get_page_content(ctx, content_config):
 
 def get_menu(language, content_config):
 	menu = []
-	for title in content_config['pagename_by_language_and_title'].get(language, {}):
-		pagename = content_config['pagename_by_language_and_title'][language][title]
+	for page in content_config['pages_by_language'].get(language, []):
 		menu.append({
-			"title": title,
-			"url": "/%s/%s" %(language, pagename)
+			"title": page["title"],
+			"url": "/%s/%s" %(language, page["name"])
 		})
 	return menu
 
@@ -114,9 +113,9 @@ def custom_error_handler(error):
     response = jsonify({'message': json.loads(error.description).get('message', "")})
     return response
 
-@app.route('/', defaults={'pagename': None, 'language': None})
-@app.route('/<language>', defaults={'pagename': None})
-@app.route("/<language>/<pagename>")
+@app.route('/', defaults={'pagename': None, 'language': None}, methods = ['GET'])
+@app.route('/<language>', defaults={'pagename': None}, methods = ['GET'])
+@app.route("/<language>/<pagename>", methods = ['GET'])
 def page_view(pagename, language):
 	if not is_valid_path_component(pagename) or not is_valid_path_component(language):
 		abort(403)

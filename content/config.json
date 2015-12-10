@@ -1,20 +1,20 @@
 {
-	"pagename_by_language_and_title": {
-		"en": {
-			"About Protogrid":"001-about",
-			"Blog":"002-blog",
-			"Events":"003-events"
-		},
-		"de": {
-			"Über Protogrid":"001-about",
-			"Ereignisse":"002-events",
-			"Speziell für Deutschsprechende":"00Z-special"
-		}
+	"pages_by_language": {
+		"en": [
+			{"title": "About Protogrid", "name": "001-about"},
+			{"title": "Blog", "name": "002-blog"},
+			{"title": "Events", "name": "003-events"}
+		],
+		"de": [
+			{"title": "Über Protogrid", "name": "001-about"},
+			{"title": "Ereignisse", "name": "002-events"},
+			{"title": "Speziell für Deutschsprechende", "name": "00Z-special"}
+		]
 	},
 	"active_languages": [
-		{"language":"English", "id":"en"},
-		{"language":"German", "id":"de"},
-		{"language":"Spanish", "id":"es"}
+		{"language": "English", "id":"en"},
+		{"language": "German", "id":"de"},
+		{"language": "Spanish", "id":"es"}
 	],
 	"active_post_types_by_pagename": {
 		"002-blog": [
