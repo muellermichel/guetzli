@@ -20,13 +20,15 @@
 
 import os, codecs, json, re
 import pystache
-from flask import Flask, abort, redirect, url_for, request
+from flask import Flask, abort, redirect, url_for, request, jsonify
 app = Flask(__name__)
 
 _file_content_by_path = {}
 _file_modification_date_by_path = {}
 _checked_path_components = {}
 _content_config = {}
+_post_filenames_by_subdirectory_and_language = {}
+_post_directory_modification_dates_by_subdirectory_and_language = {}
 
 class NotFoundError(Exception):
 	pass
@@ -40,7 +42,7 @@ def get_file_content(path):
 			del _file_content_by_path[path]
 		if path in _file_modification_date_by_path:
 			del _file_modification_date_by_path[path]
-		raise NotFoundError()
+		raise NotFoundError(path)
 	previous_modification_date = _file_modification_date_by_path.get(path)
 	current_modification_date = os.path.getmtime(path)
 	if previous_modification_date and current_modification_date <= previous_modification_date:
@@ -61,16 +63,30 @@ def get_content_config():
 	_content_config = json.loads(file_content)
 	return _content_config
 
-def get_template():
-	template, _ = get_file_content(os.path.join(base_path(), 'design', 'template') + '.html')
+def get_template(template_name = "template"):
+	template, _ = get_file_content(os.path.join(base_path(), 'design', template_name) + '.html')
 	return template
 
 def get_page_path(pagename, language):
 	return os.path.join(base_path(), 'content', 'pages', language, pagename) + '.html'
 
-def get_page_content(ctx):
-	page, _ = get_file_content(get_page_path(ctx["pagename"], ctx["language"]))
-	return pystache.render(page, ctx)
+def get_post_content(ctx, post_filename):
+	return "todo"
+
+def get_posts_listing(ctx, posts_subdirectory, items_per_pagename, page_number=1):
+	return pystache.render(get_template(posts_subdirectory + "-items"), ctx)
+
+def get_page_content(ctx, content_config):
+	pagename = ctx["pagename"]
+	page_content, _ = get_file_content(get_page_path(pagename, ctx["language"]))
+	for entry in content_config.get("active_post_types_by_pagename", {}).get(pagename, []):
+		posts_subdirectory = entry["posts_directory"]
+		ctx[posts_subdirectory + "_items"] = get_posts_listing(
+			ctx,
+			posts_subdirectory,
+			entry["items_per_page"]
+		)
+	return pystache.render(page_content, ctx)
 
 def get_menu(language, content_config):
 	menu = []
@@ -93,11 +109,16 @@ def is_valid_path_component(component):
 		return True
 	return False
 
-@app.route('/', defaults={'page': None, 'language': None})
-@app.route('/<language>', defaults={'page': None})
-@app.route("/<language>/<page>")
-def page_view(page, language):
-	if not is_valid_path_component(page) or not is_valid_path_component(language):
+@app.errorhandler(500)
+def custom_error_handler(error):
+    response = jsonify({'message': json.loads(error.description).get('message', "")})
+    return response
+
+@app.route('/', defaults={'pagename': None, 'language': None})
+@app.route('/<language>', defaults={'pagename': None})
+@app.route("/<language>/<pagename>")
+def page_view(pagename, language):
+	if not is_valid_path_component(pagename) or not is_valid_path_component(language):
 		abort(403)
 	content_config = get_content_config()
 	if language == None:
@@ -106,8 +127,9 @@ def page_view(page, language):
 		])
 	if language == None:
 		language = content_config['default_language']
-	pagename = page if page != None else content_config['default_page']
-	is_default_page = pagename == content_config['default_page']
+	if pagename == None:
+		pagename = content_config['default_pagename']
+	is_default_pagename = pagename == content_config['default_pagename']
 	ctx = {
 		"pagename": pagename,
 		"language": language,
@@ -115,9 +137,11 @@ def page_view(page, language):
 		"languages": content_config['active_languages'],
 	}
 	try:
-		ctx["content"] = get_page_content(ctx)
-	except NotFoundError:
-		if is_default_page:
+		ctx["content"] = get_page_content(ctx, content_config)
+	except NotFoundError as e:
+		if str(e) != get_page_path(pagename, language):
+			abort(500, {'message': 'sorry, %s could not be found' %(str(e))})
+		elif is_default_pagename:
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))

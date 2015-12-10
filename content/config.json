@@ -16,7 +16,7 @@
 		{"language":"German", "id":"de"},
 		{"language":"Spanish", "id":"es"}
 	],
-	"active_post_items_by_pagename": {
+	"active_post_types_by_pagename": {
 		"002-blog": [
 			{"posts_directory": "blog", "items_per_page": 3}
 		]
@@ -25,6 +25,6 @@
 		"mmu": "Michel Müller",
 		"msc": "Mark Schmitz"
 	},
-	"default_page": "001-about",
+	"default_pagename": "001-about",
 	"default_language": "en"
 }
