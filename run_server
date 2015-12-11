@@ -1,0 +1,17 @@
+#!/bin/bash
+# ============ preamble ================== #
+set -o errexit #exit when command fails
+set -o nounset #exit when trying to use undeclared variable
+set -o pipefail #pass along errors within a pipe
+
+# =============== setup ================== #
+working_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+log_file="${working_dir}/guetzli_log"
+pid_file="${working_dir}/uwsgi.pid"
+port=5000
+
+# ========= eat the guetzli ============== #
+touch "$log_file"
+uwsgi --stop "${working_dir}/uwsgi.pid" && :
+sleep 0.3
+uwsgi --master --processes 1 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5
