@@ -141,8 +141,6 @@ ToDo
 ----
 1) Forms & Mailing support
 
-2) Blogging
-
-3) Dockerization
+2) Dockerization
 
 
