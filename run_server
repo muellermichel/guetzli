@@ -14,4 +14,4 @@ port=5000
 touch "$log_file"
 uwsgi --stop "${working_dir}/uwsgi.pid" && :
 sleep 0.3
-uwsgi --master --processes 1 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5
+uwsgi --master --processes 4 --offload-threads 4 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5
