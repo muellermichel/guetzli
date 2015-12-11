@@ -37,7 +37,7 @@ Features
 
 2) Full multilanguage support. Add as many languages as you like by editing `content/config.json` and add the linked pages in language-subfolders under `content/pages` (see the example in the repo). Guetzli will match the one that best represents the client's request header and lists the other options just in case.
 
-3) Mustache templating, both within the page contents as well as the template.
+3) Mustache templating - in the template, pages and posts.
 
 4) Localized strings, defined in `content/config.json`.
 
