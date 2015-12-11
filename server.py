@@ -80,7 +80,7 @@ def get_content_config():
 	return _content_config
 
 def get_post_content(ctx, content_config, posts_path, posts_subdirectory, file_name):
-	match = re.match(r'(\d{4}-\d{2}-\d{2})-(\w*)-(.*?)\.\w*', file_name)
+	match = re.match(r'(\d{4}-\d{2}-\d{2})-(\w*)-?(.*?)\.\w*', file_name)
 	author_shortname = None
 	publishing_date = None
 	if match:
