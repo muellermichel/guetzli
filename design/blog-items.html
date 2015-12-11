@@ -1,7 +1,17 @@
 <div>blog-items</div>
 {{#blog_items}}
 <div>
-	<h1>{{ author }} {{ date_particle }} {{ publishing_date }}</h1>
-	<div>{{{ content }}}</div>
+	{{{ item }}}
 </div>
 {{/blog_items}}
+<div>
+	<p>{{ page_localized }} {{ page_number }} {{ of_localized }} {{ number_of_pages }} ({{ blog_posts_localized }} {{ first_item_number }} {{ to_localized }} {{ last_item_number }} {{ of_localized}} {{ number_of_items }})</p>
+	<p>
+	{{#next_page}}
+	<a href="{{ current_path }}?page_number={{ next_page }}">Older</a>
+	{{/next_page}}
+	{{#previous_page}}
+	<a href="{{ current_path }}?page_number={{ previous_page }}">Newer</a>
+	{{/previous_page}}
+	</p>
+</div>

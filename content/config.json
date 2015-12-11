@@ -7,7 +7,8 @@
 		],
 		"de": [
 			{"title": "Über Protogrid", "name": "001-about"},
-			{"title": "Ereignisse", "name": "002-events"},
+			{"title": "Blog", "name": "002-blog"},
+			{"title": "Ereignisse", "name": "003-events"},
 			{"title": "Speziell für Deutschsprechende", "name": "00Z-special"}
 		]
 	},
@@ -17,7 +18,11 @@
 		{"language": "Spanish", "id":"es"}
 	],
 	"strings_by_template_reference": {
-		"date_particle": {"en": "on", "de": "am"}
+		"date_particle": {"en": "on", "de": "am"},
+		"page_localized": {"en": "page", "de": "Seite"},
+		"of_localized": {"en": "of", "de": "von"},
+		"blog_posts_localized": {"en": "blog posts", "de": "Blog-Einträge"},
+		"to_localized": {"en": "to", "de": "bis"}
 	},
 	"active_post_types_by_pagename": {
 		"002-blog": [
