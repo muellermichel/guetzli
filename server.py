@@ -192,7 +192,9 @@ def custom_error_handler(error):
 @app.route("/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
 @app.route("/<language>/<pagename>/<post_id>", methods = ['GET'])
 def page_view(pagename, language, post_id):
-	if not is_valid_path_component(pagename) or not is_valid_path_component(language):
+	if not is_valid_path_component(pagename) \
+	or not is_valid_path_component(language) \
+	or not is_valid_path_component(post_id):
 		abort(403)
 	content_config = get_content_config()
 	if language == None:
