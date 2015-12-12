@@ -9,7 +9,7 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 3) Fast. On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
 
-![Choco Guetzli](./docs/Choco_leibniz.jpg)
+![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
 
 Setup
 -----
