@@ -19,7 +19,7 @@ Setup
 
 2) `sudo pip install Flask pystache`.
 
-3) Feed guetzli to the python: `python ./server.py`.
+3) Feed guetzli to the python: `python ./server.py`. For a production ready deployment, please see [Going Live!](docs/documentation.md#going-live)
 
 4) Enjoy on localhost:5000.
 
