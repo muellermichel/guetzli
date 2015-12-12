@@ -1,4 +1,22 @@
 #!/bin/bash
+
+# Copyright (C) 2014 Michel Müller
+
+# This file is part of Guetzli.
+
+# Guetzli is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Guetzli is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
+
 # ============ preamble ================== #
 set -o errexit #exit when command fails
 set -o nounset #exit when trying to use undeclared variable
@@ -12,6 +30,6 @@ port=5000
 
 # ========= eat the guetzli ============== #
 touch "$log_file"
-uwsgi --stop "${working_dir}/uwsgi.pid" && :
+uwsgi --stop "$pid_file" && :
 sleep 0.3
-uwsgi --master --processes 1 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5
+uwsgi --master --processes 1 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /choco="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5

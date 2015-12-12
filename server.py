@@ -22,7 +22,7 @@ from __future__ import division
 import os, codecs, json, re, math
 import pystache
 from flask import Flask, abort, redirect, url_for, request, jsonify
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./design/static", static_url_path="/choco")
 
 _file_content_by_path = {}
 _file_modification_date_by_path = {}
@@ -167,7 +167,7 @@ def get_menu(language, content_config):
 	for page in content_config['pages_by_language'].get(language, []):
 		menu.append({
 			"title": page["title"],
-			"url": "/%s/%s" %(language, page["name"])
+			"url": url_for("page_view", pagename=page["name"], language=language)
 		})
 	return menu
 
@@ -188,9 +188,9 @@ def custom_error_handler(error):
     return response
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
-@app.route('/<language>', defaults={'pagename': None, 'post_id': None}, methods=['GET'])
-@app.route("/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
-@app.route("/<language>/<pagename>/<post_id>", methods = ['GET'])
+@app.route('/bisc/<language>', defaults={'pagename': None, 'post_id': None}, methods=['GET'])
+@app.route("/bisc/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
+@app.route("/bisc/<language>/<pagename>/<post_id>", methods = ['GET'])
 def page_view(pagename, language, post_id):
 	if not is_valid_path_component(pagename) \
 	or not is_valid_path_component(language) \
