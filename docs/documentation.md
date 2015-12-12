@@ -104,3 +104,7 @@ Edit `design/template.html`.
   "default_language": "en"
 }
 ```
+
+Going Live!
+-----------
+To feed Guetzli to many visitors, see the `run_server` script for a production ready multi-threaded execution of this CMS. You need uwsgi to use this script (`./run_server`). Adapt the concurrency (`--processes` for dynamic content `--offload-threads 4` for static content) to your hardware. It's best to deploy it using the system process manager of your environment (systemd, upstart, docker..). If you have a production config for any of these systems, please share so others can profit from your work.

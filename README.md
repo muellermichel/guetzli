@@ -7,7 +7,7 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 2) Powerful. Add as many pages and languages as you like by editing the content directory using favourite local file editor, no server restarts required. Even changing the template or the configuration doesn't require a restart. Need to rollout to production? Just git push & pull, rollout done.
 
-3) Fast. On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
+3) Fast.  On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
 
 What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
 
@@ -19,7 +19,7 @@ Setup
 
 2) `sudo pip install Flask pystache`.
 
-3) `python ./server.py`.
+3) Feed guetzli to the python: `python ./server.py`.
 
 4) Enjoy on localhost:5000.
 
