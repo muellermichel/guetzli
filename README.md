@@ -9,7 +9,7 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 3) Fast. On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
 
-What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#The-Biscuit) and [chocolate](docs/documentation.md#The-Chocolate).
+What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
 
 ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
 
@@ -48,6 +48,10 @@ Features
 5) Redirect to (localized) default page if a page can't be found.
 
 6) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
+
+Documentation
+-------------
+All you need to know should be in the [documentation](docs/documentation.md). Otherwise, please open up an issue with your question.
 
 Dependencies
 ------------
