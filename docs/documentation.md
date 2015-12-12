@@ -33,27 +33,27 @@ HTML pages are fine, but they may be a bit boring and dry to some visitors. To m
 
 HowTo
 -----
-*Add/Change/Remove a (blog-) post*
+**Add/Change/Remove a (blog-) post**
 
 Add/Change/Remove a file under `content/posts/[post-type]/[language]` using a `YYYY-MM-DD-[AuthorShortname]-[AnyTitle].html` filename format. See the existing examples. Specially available tags for blog entries are `{{ author }}` `{{ post_path }}` (URL to the standalone entry) and  `{{ publishing_date }}`.
 
-*Add/Change/Remove a page*
+**Add/Change/Remove a page**
 
 Add/Change/Remove a file under `content/pages/[language]`. From the moment the file exists, the page is reachable under the URL `/[language]/[filename(without .html)]`.
 
-*Link a page in the menu*
+**Link a page in the menu**
 
 Add `{"title": "[Given Title]", "name":[filename(without .html)]}` under the correct language list in `content/config.json` --> `pages_by_language`.
 
-*Add a new localized string*
+**Add a new localized string**
 
 Add it in `content/config.json` --> `strings_by_template_reference` using the reference as key (see examples) and use it with `{{ reference }}` in any page, post or template.
 
-*Change the appearance*
+**Change the appearance**
 
 Edit `design/template.html`.
 
-*Add a new post type*
+**Add a new post type**
 
 1) Add a new directory with language subdirectories under `content/posts`.
 
@@ -63,7 +63,7 @@ Edit `design/template.html`.
 
 4) Reference the posts directory in `content/config.json` --> `active_post_types_by_pagename` (see the blog as an example).
 
-*example content/config.json*
+**example content/config.json**
 ```
 {
   "pages_by_language": {
