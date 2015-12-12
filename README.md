@@ -9,7 +9,36 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 3) Fast. On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
 
+What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with biscuit and chocolate.
 ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
+
+The Biscuit
+-----------
+Dynamic content (i.e. the 'bisc') is the backbone of Guetzli. It's generated using the pages and posts under `./content` and the templates under `./design`. To your visitors it is served using the following URLs:
+
+`/`
+
+The root landing page matches the visitor's language to the available ones listed in `content/config.json` --> `active_languages` and serves the page defined as default in `content/config.json` --> `default_pagename`, rendered using `design/template.html`. In case there is no language match it uses `content/config.json` --> `default_language`.
+
+`/bisc`
+
+Same as root.
+
+`/bisc/[language]`
+
+Same as root, but serves a specific language.
+
+`/bisc/[language]/[pagename]`
+
+Serves a specific page if available under `content/pages/[language]/[pagename].html` using `design/template.html`. If unavailable, serves `default_pagename` in the chosen language.
+
+`/bisc/[language]/[post-type]/[post-id]`
+
+Serves a specific post if available under `content/posts/[post-type]/[language]/[post-id].html` using `design/template.html`. If unavailable, serves `default_pagename` in the chosen language.
+
+The Chocolate
+-------------
+HTML pages are fine, but they may be a bit boring and dry to some visitors. To make your Guetzli more tasty, add some static files like CSS, images, javascript or whatever you like under `./design/static/[your-folder-structure]`. This is served as `/choco/[your-folder-structure]`.
 
 Setup
 -----

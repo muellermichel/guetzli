@@ -188,6 +188,7 @@ def custom_error_handler(error):
     return response
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
+@app.route('/bisc', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
 @app.route('/bisc/<language>', defaults={'pagename': None, 'post_id': None}, methods=['GET'])
 @app.route("/bisc/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
 @app.route("/bisc/<language>/<pagename>/<post_id>", methods = ['GET'])
