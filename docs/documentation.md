@@ -45,9 +45,9 @@ Templating
 
 *  `{{#menu}} .. {{/menu}}` - repeats the content for each menu entry defined in the current language in `content/config.json` --> `pages_by_language`. Offers the following tags for each entry:
 
-  * {{ url }} - the relative URL to the page.
+  * `{{ url }}` - the relative URL to the page.
 
-  * {{ title }} - the title as defined in the page metadata in `content/config.json`.
+  * `{{ title }}` - the title as defined in the page metadata in `content/config.json`.
 
 * `{{#languages}} .. {{/languages}}` - repeats the content for each language defined in `content/config.json` --> `active_languages`. Offers the following tags for each entry:
 
