@@ -237,7 +237,7 @@ def page_view(pagename, language, post_id):
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))
-	return render_file_content(get_template_path(), ctx)
+	return render_file_content(get_template_path(), ctx) + str(ctx)
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', debug=True)

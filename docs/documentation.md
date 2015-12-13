@@ -31,6 +31,30 @@ The Chocolate
 -------------
 HTML pages are fine, but they may be a bit boring and dry to some visitors. To make your Guetzli more tasty, add some static files like CSS, images, javascript or whatever you like under `./design/static/[your-folder-structure]`. This is served as `/choco/[your-folder-structure]`.
 
+Templating
+----------
+**The following tags are available everywhere (pages, posts and templates)**
+
+* `{{ reference }}` for every reference defined in the current language in `content/config.json` --> `strings_by_template_reference`
+
+* `{{ current_path }}` - relative URL of the currently rendered page.
+
+* `{{ pagename }}` - the filename (without `.html`) of the currently served page (also serves as the page's identifier in the URL).
+
+* `{{{ content }}}` - the content of the currently accessed page.
+
+*  `{{#menu}} .. {{/menu}}` - repeats the content for each menu entry defined in the current language in `content/config.json` --> `pages_by_language`. Offers the following tags for each entry:
+
+  * {{ url }} - the relative URL to the page.
+
+  * {{ title }} - the title as defined in the page metadata in `content/config.json`.
+
+* `{{#languages}} .. {{/languages}}` - repeats the content for each language defined in `content/config.json` --> `active_languages`. Offers the following tags for each entry:
+
+  * `{{ id }}` - the language locale as defined in the language metadata in `content/config.json`.
+
+  * `{{ language }}` - the human readable language string as defined in the language metadata in `content/config.json`.
+
 HowTo
 -----
 **Add/Change/Remove a (blog-) post**
@@ -57,7 +81,7 @@ Edit `design/template.html`.
 
 1) Add a new directory with language subdirectories under `content/posts`.
 
-2) Copy `design/blog-items` as `design/[post-dir-name]-items`. Adapt it to your needs.
+2) Copy `design/blog-items.html` as `design/[post-dir-name]-items.html`. Adapt it to your needs.
 
 3) Add the `{{ [post-dir-name]_items }}` tag on a page where you'd like to list your posts.
 
