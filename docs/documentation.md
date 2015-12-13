@@ -3,6 +3,18 @@ Guetzli Documentation
 
 Guetzli, a deliciously fast and simple Filesystem-Web-CMS. For setup and design, please see the [README](../README.md).
 
+**Contents**
+
+[The Biscuit (dynamic content)](#the-biscuit)
+
+[The Chocolate (static content)](#the-chocolate)
+
+[Templating](#templating)
+
+[HowTo](#howto)
+
+[Going Live!](#going-live)
+
 The Biscuit
 -----------
 Dynamic content (i.e. the 'bisc') is the backbone of Guetzli. It's generated using the pages and posts under `./content` and the templates under `./design`. To your visitors it is served using the following URLs:
