@@ -153,7 +153,7 @@ def get_page_content(ctx, content_config):
 		items_per_page = entry.get("items_per_page")
 		if not isinstance(items_per_page, int) or items_per_page <= 0:
 			items_per_page = 5
-		ctx[posts_subdirectory + "_items"] = get_posts_listing(
+		ctx[posts_subdirectory + "_listing"] = get_posts_listing(
 			ctx,
 			content_config,
 			posts_subdirectory,
@@ -237,7 +237,7 @@ def page_view(pagename, language, post_id):
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))
-	return render_file_content(get_template_path(), ctx) + str(ctx)
+	return render_file_content(get_template_path(), ctx)
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', debug=True)

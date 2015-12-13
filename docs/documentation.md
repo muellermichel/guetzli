@@ -25,7 +25,11 @@ Serves a specific page if available under `content/pages/[language]/[pagename].h
 
 `/bisc/[language]/[post-type]/[post-id]`
 
-Serves a specific post if available under `content/posts/[post-type]/[language]/[post-id].html` using `design/template.html`. If unavailable, serves `default_pagename` in the chosen language.
+Serves a specific post if available under `content/posts/[post-type]/[language]/[post-id].html` using `design/template.html`. If unavailable, serves `default_pagename` in the chosen language. [post-id] should be in `YYYY-MM-DD-[author_shortname]-[post_name]` format.
+
+Additionally, Guetzli recognizes the following URL arguments (after `?`):
+
+* `page_number=[integer larger than one]` - page requested for post listings.
 
 The Chocolate
 -------------
@@ -33,6 +37,8 @@ HTML pages are fine, but they may be a bit boring and dry to some visitors. To m
 
 Templating
 ----------
+This section serves as a reference for templating with Guetzli. Please have a look at the provided example that comes with the repository, it's mostly self explanatory.
+
 **The following tags are available everywhere (pages, posts and templates)**
 
 * `{{ reference }}` for every reference defined in the current language in `content/config.json` --> `strings_by_template_reference`
@@ -40,8 +46,6 @@ Templating
 * `{{ current_path }}` - relative URL of the currently rendered page.
 
 * `{{ pagename }}` - the filename (without `.html`) of the currently served page (also serves as the page's identifier in the URL).
-
-* `{{{ content }}}` - the content of the currently accessed page.
 
 *  `{{#menu}} .. {{/menu}}` - repeats the content for each menu entry defined in the current language in `content/config.json` --> `pages_by_language`. Offers the following tags for each entry:
 
@@ -55,11 +59,43 @@ Templating
 
   * `{{ language }}` - the human readable language string as defined in the language metadata in `content/config.json`.
 
+**The following tags are additionally available on pages for each post type that has been registered for the respective page in `content/config.json` --> `active_post_types_by_pagename`**
+
+  * `{{{ [post-type]_listing }}}` - renders a page of [post-type] in the current language. A page contains `content/config.json` --> `active_post_types_by_pagename` --> [pagename] --> [items_per_page] many posts. Each post is defined in a file under `content/posts/[post-type]/[language]` where [post-type] is given by `content/config.json` --> `active_post_types_by_pagename` --> [pagename] --> [posts_directory].
+
+* `{{ author }}` - either the [author_shortname] as defined in the post filename or - if available - the author's name as defined in `content/config.json` --> `authors_by_shortname`.
+
+* `{{ post_path }}` - the relative URL of the post.
+
+* `{{ publishing_date }}` - the date as defined in the post filename.
+
+**The following tags are additionally available in `design/template.html`**
+
+* `{{{ content }}}` - the content of the currently accessed page.
+
+**The following tags are additionally available in post listings templates `design/[post-type]-items.html`**
+
+  * `{{#[post-type]_items}} .. {{/[post-type]_items}}` - repeats the content for each post on the current page. Offers the following tags for each post:
+
+    * {{ item }} - the content for the current post.
+
+  * `{{ first_item_number }}` - a one-based number for the first displayed post on the current page.
+
+  * `{{ last_item_number }}` - a one-based number for the last displayed post on the current page.
+
+  * `{{ number_of_items }}` - the total number of posts available.
+
+  * `{{ number_of_pages }}` - the total number of pages available.
+
+  * `{{ next_page }}` - page number of the next page or `None` if not available.
+
+  * `{{ previous_page }}` - page number of the previous page or `None` if not available.
+
 HowTo
 -----
 **Add/Change/Remove a (blog-) post**
 
-Add/Change/Remove a file under `content/posts/[post-type]/[language]` using a `YYYY-MM-DD-[AuthorShortname]-[AnyTitle].html` filename format. See the existing examples. Specially available tags for blog entries are `{{ author }}` `{{ post_path }}` (URL to the standalone entry) and  `{{ publishing_date }}`.
+Add/Change/Remove a file under `content/posts/[post-type]/[language]` using a `YYYY-MM-DD-[author_shortname]-[post_name].html` filename format. See the existing examples. Specially available tags for blog entries are `{{ author }}` `{{ post_path }}` (URL to the standalone entry) and  `{{ publishing_date }}`.
 
 **Add/Change/Remove a page**
 
