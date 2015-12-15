@@ -1,6 +1,8 @@
 Guetzli, A deliciously fast and simple Filesystem-Web-CMS
 =========================================================
 
+[![Join the chat at https://gitter.im/muellermichel/guetzli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/muellermichel/guetzli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Guetzli came about when we became too frustrated with Wordpress and its cesspool of plugins constantly breaking each other just to provide basic features like backups and multilingual pages. Guetzli is
 
 1) Insanely simple. It's written in less than 300 lines of Python Flask.
