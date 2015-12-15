@@ -15,6 +15,8 @@ What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good
 
 ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
 
+[![Screencast: Writing a Unified Stencil Code](/../master/docs/Screencast_Thumbnail.png)](http://www.youtube.com/watch?v=3Of4kFQQRi4)
+
 Setup
 -----
 1) Clone this repo and `cd` into it.
