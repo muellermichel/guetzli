@@ -73,6 +73,10 @@ Michel Müller, System Architect [Protogrid](http://protogrid.com)
 
 Mark Schmitz, Web Engineer [Protogrid](http://protogrid.com)
 
+Contributors
+------------
+Thanks to Renato Testa, Chief DevOps [Protogrid](http://protogrid.com), for contributing the VPS performance benchmarks!
+
 ToDo
 ----
 1) Forms & Mailing support
