@@ -22,7 +22,7 @@ from __future__ import division
 import os, codecs, json, re, math
 import pystache
 from flask import Flask, abort, redirect, url_for, request, jsonify
-app = Flask(__name__, static_folder='./design/static', static_url_path='/static')
+app = Flask(__name__, static_folder="./design/static", static_url_path="/choco")
 
 _file_content_by_path = {}
 _file_modification_date_by_path = {}
@@ -142,9 +142,12 @@ def get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_
 	return page, page_info
 
 def get_posts_listing(ctx, content_config, posts_subdirectory, items_per_page, page_number=1):
-	page, page_info = get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number)
-	ctx[posts_subdirectory + "_items"] = page
-	ctx.update(page_info)
+	try:
+		page, page_info = get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number)
+		ctx[posts_subdirectory + "_items"] = page
+		ctx.update(page_info)
+	except NotFoundError:
+		pass
 	return render_file_content(get_template_path(posts_subdirectory + "-items"), ctx)
 
 def get_page_content(ctx, content_config):
@@ -153,7 +156,7 @@ def get_page_content(ctx, content_config):
 		items_per_page = entry.get("items_per_page")
 		if not isinstance(items_per_page, int) or items_per_page <= 0:
 			items_per_page = 5
-		ctx[posts_subdirectory + "_items"] = get_posts_listing(
+		ctx[posts_subdirectory + "_listing"] = get_posts_listing(
 			ctx,
 			content_config,
 			posts_subdirectory,
@@ -167,7 +170,7 @@ def get_menu(language, content_config):
 	for page in content_config['pages_by_language'].get(language, []):
 		menu.append({
 			"title": page["title"],
-			"url": url_for('page_view', language=language, pagename=page["name"])
+			"url": url_for("page_view", pagename=page["name"], language=language)
 		})
 	return menu
 
@@ -188,9 +191,10 @@ def custom_error_handler(error):
     return response
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
-@app.route('/content/<language>', defaults={'pagename': None, 'post_id': None}, methods=['GET'])
-@app.route("/content/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
-@app.route("/content/<language>/<pagename>/<post_id>", methods = ['GET'])
+@app.route('/bisc', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
+@app.route('/bisc/<language>', defaults={'pagename': None, 'post_id': None}, methods=['GET'])
+@app.route("/bisc/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
+@app.route("/bisc/<language>/<pagename>/<post_id>", methods = ['GET'])
 def page_view(pagename, language, post_id):
 	if not is_valid_path_component(pagename) \
 	or not is_valid_path_component(language) \

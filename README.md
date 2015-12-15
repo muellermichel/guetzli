@@ -7,7 +7,11 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 2) Powerful. Add as many pages and languages as you like by editing the content directory using favourite local file editor, no server restarts required. Even changing the template or the configuration doesn't require a restart. Need to rollout to production? Just git push & pull, rollout done.
 
-3) Fast. On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
+3) Fast.  On a 2012 Macbook Pro with SSD it's doing 400-500 requests per second *just using the single threaded Flask toy server*. Multi-threaded wsgi-servers on a decent VPS will be even happier with Guetzli.
+
+What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
+
+![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
 
 Setup
 -----
@@ -15,9 +19,9 @@ Setup
 
 2) `sudo pip install Flask pystache`.
 
-3) `python ./server.py`.
+3) Feed guetzli to the python: `python ./server.py`.
 
-4) Enjoy on localhost:5000.
+4) Enjoy on localhost:5000 or [Your-Devserver-URL]:5000 in case your server can be reached from the outside. For a production ready deployment, please see [Going Live!](docs/documentation.md#going-live)
 
 Design Principles
 -----------------
@@ -45,79 +49,9 @@ Features
 
 6) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
 
-HowTo
------
-*Add/Change/Remove a (blog-) post*
-
-Add/Change/Remove a file under `content/posts/[post-type]/[language]` using a `YYYY-MM-DD-[AuthorShortname]-[AnyTitle].html` filename format. See the existing examples. Specially available tags for blog entries are `{{ author }}` `{{ post_path }}` (URL to the standalone entry) and  `{{ publishing_date }}`.
-
-*Add/Change/Remove a page*
-
-Add/Change/Remove a file under `content/pages/[language]`. From the moment the file exists, the page is reachable under the URL `/[language]/[filename(without .html)]`.
-
-*Link a page in the menu*
-
-Add `{"title": "[Given Title]", "name":[filename(without .html)]}` under the correct language list in `content/config.json` --> `pages_by_language`.
-
-*Add a new localized string*
-
-Add it in `content/config.json` --> `strings_by_template_reference` using the reference as key (see examples) and use it with `{{ reference }}` in any page, post or template.
-
-*Change the appearance*
-
-Edit `design/template.html`.
-
-*Add a new post type*
-
-1) Add a new directory with language subdirectories under `content/posts`.
-
-2) Copy `design/blog-items` as `design/[post-dir-name]-items`. Adapt it to your needs.
-
-3) Add the `{{ [post-dir-name]_items }}` tag on a page where you'd like to list your posts.
-
-4) Reference the posts directory in `content/config.json` --> `active_post_types_by_pagename` (see the blog as an example).
-
-*example content/config.json*
-```
-{
-  "pages_by_language": {
-    "en": [
-      {"title": "About Protogrid", "name": "001-about"},
-      {"title": "Blog", "name": "002-blog"},
-      {"title": "Events", "name": "003-events"}
-    ],
-    "de": [
-      {"title": "Über Protogrid", "name": "001-about"},
-      {"title": "Blog", "name": "002-blog"},
-      {"title": "Ereignisse", "name": "003-events"},
-      {"title": "Speziell für Deutschsprechende", "name": "00Z-special"}
-    ]
-  },
-  "active_languages": [
-    {"language": "English", "id":"en"},
-    {"language": "German", "id":"de"},
-    {"language": "Spanish", "id":"es"}
-  ],
-  "strings_by_template_reference": {
-    "date_particle": {"en": "on", "de": "am"},
-    "page_localized": {"en": "page", "de": "Seite"},
-    "of_localized": {"en": "of", "de": "von"},
-    "blog_posts_localized": {"en": "blog posts", "de": "Blog-Einträge"},
-    "to_localized": {"en": "to", "de": "bis"}
-  },
-  "active_post_types_by_pagename": {
-    "002-blog": [
-      {"posts_directory": "blog", "items_per_page": 3}
-    ]
-  },
-  "authors_by_shortname": {
-    "mmu": "Michel Müller",
-    "msc": "Mark Schmitz"
-  },
-  "default_pagename": "001-about",
-  "default_language": "en"
-}
-```
+Documentation
+-------------
+All you need to know should be in the [documentation](docs/documentation.md). Otherwise, please open up an issue with your question.
 
 Dependencies
 ------------

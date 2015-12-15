@@ -1,0 +1,69 @@
+Output of `ab -n 1000 -c 100 [Guetzli-URI]/en/002-blog` from a place with fast internet in Switzerland:
+
+Document Path:          /en/002-blog
+Document Length:        1041 bytes
+
+Concurrency Level:      100
+Time taken for tests:   2.893 seconds
+Complete requests:      1000
+Failed requests:        0
+Write errors:           0
+Total transferred:      1196000 bytes
+HTML transferred:       1041000 bytes
+Requests per second:    345.62 [#/sec] (mean)
+Time per request:       289.336 [ms] (mean)
+Time per request:       2.893 [ms] (mean, across all concurrent requests)
+Transfer rate:          403.67 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       20   22   1.9     22      28
+Processing:    34  201  26.1    205     254
+Waiting:       34  201  26.1    205     254
+Total:         55  223  26.2    227     282
+
+Percentage of the requests served within a certain time (ms)
+  50%    227
+  66%    230
+  75%    232
+  80%    234
+  90%    238
+  95%    239
+  98%    242
+  99%    257
+ 100%    282 (longest request)
+ 
+ ... From a VPS in the same network as Guetzli:
+ 
+ Document Path:          /
+Document Length:        490 bytes
+
+Concurrency Level:      100
+Time taken for tests:   1.663 seconds
+Complete requests:      1000
+Failed requests:        0
+Write errors:           0
+Total transferred:      644000 bytes
+HTML transferred:       490000 bytes
+Requests per second:    601.48 [#/sec] (mean)
+Time per request:       166.256 [ms] (mean)
+Time per request:       1.663 [ms] (mean, across all concurrent requests)
+Transfer rate:          378.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        3    6   7.6      3      34
+Processing:    23  152  25.3    157     173
+Waiting:       23  151  25.3    157     172
+Total:         55  158  19.1    161     182
+
+Percentage of the requests served within a certain time (ms)
+  50%    161
+  66%    165
+  75%    168
+  80%    168
+  90%    170
+  95%    172
+  98%    175
+  99%    176
+ 100%    182 (longest request)
