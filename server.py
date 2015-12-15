@@ -86,7 +86,7 @@ def get_post_content(ctx, content_config, posts_path, posts_subdirectory, file_n
 	if match:
 		publishing_date = match.group(1)
 		author_shortname = match.group(2)
-		author = content_config.get('authors_by_shortname', {}).get(match.group(2), author_shortname)
+	author = content_config.get('authors_by_shortname', {}).get(author_shortname, author_shortname)
 	ctx.update({
 		"post_path": url_for(
 			'page_view',
@@ -142,9 +142,12 @@ def get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_
 	return page, page_info
 
 def get_posts_listing(ctx, content_config, posts_subdirectory, items_per_page, page_number=1):
-	page, page_info = get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number)
-	ctx[posts_subdirectory + "_items"] = page
-	ctx.update(page_info)
+	try:
+		page, page_info = get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number)
+		ctx[posts_subdirectory + "_items"] = page
+		ctx.update(page_info)
+	except NotFoundError:
+		pass
 	return render_file_content(get_template_path(posts_subdirectory + "-items"), ctx)
 
 def get_page_content(ctx, content_config):
@@ -231,7 +234,8 @@ def page_view(pagename, language, post_id):
 		else:
 			ctx["content"] = get_page_content(ctx, content_config)
 	except NotFoundError as e:
-		if str(e) != get_page_path(pagename, language):
+		if (post_id == None and str(e) != get_page_path(pagename, language)) \
+		or (post_id != None and str(e) != get_post_path(pagename, language, post_id)):
 			abort(500, {'message': 'sorry, %s could not be found' %(str(e))})
 		elif is_default_pagename:
 			abort(404)
