@@ -1,6 +1,8 @@
 Guetzli, A deliciously fast and simple Filesystem-Web-CMS
 =========================================================
 
+[![Join the chat at https://gitter.im/muellermichel/guetzli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/muellermichel/guetzli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Guetzli came about when we became too frustrated with Wordpress and its cesspool of plugins constantly breaking each other just to provide basic features like backups and multilingual pages. Guetzli is
 
 1) Insanely simple. It's written in less than 300 lines of Python Flask.
@@ -12,6 +14,8 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
 
 ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
+
+[![Screencast: Writing a Unified Stencil Code](/../master/docs/Screencast_Thumbnail.png)](https://www.youtube.com/watch?v=MEUrirTZ-D8)
 
 Setup
 -----
