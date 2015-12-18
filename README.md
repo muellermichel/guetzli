@@ -24,7 +24,7 @@ Setup
 3) Feed guetzli to the python: `python ./server.py`.
 WARNING: This is only meant for development, do *not* use this for production purposes (as it could make your machine vulnerable). For production deployment please see [Going Live!](docs/documentation.md#going-live).
 
-4) Enjoy on localhost:5000 or [Your-Devserver-URL]:5000 in case your server can be reached from the outside. For a production ready deployment, please see [Going Live!](docs/documentation.md#going-live)
+4) Enjoy on localhost:5000. For a production ready deployment, please see [Going Live!](docs/documentation.md#going-live)
 
 Design Principles
 -----------------
