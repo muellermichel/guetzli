@@ -1,4 +1,4 @@
-Guetzli, A deliciously fast and simple Filesystem-Web-CMS
+Guetzli, A Deliciously Fast and Simple CMS Based on Files
 =========================================================
 
 [![Join the chat at https://gitter.im/muellermichel/guetzli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/muellermichel/guetzli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
