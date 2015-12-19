@@ -91,7 +91,7 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
   * `{{#[post-type]_items}} .. {{/[post-type]_items}}` - repeats the content for each post on the current page. Offers the following tags for each post:
 
-    * {{ item }} - the content for the current post.
+    * `{{ item }}` - the content for the current post.
 
   * `{{ first_item_number }}` - a one-based number for the first displayed post on the current page.
 
