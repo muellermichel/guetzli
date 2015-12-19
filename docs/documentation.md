@@ -1,7 +1,7 @@
 Guetzli Documentation
 =====================
 
-Guetzli, a deliciously fast and simple Filesystem-Web-CMS. For setup and design, please see the [README](../README.md).
+Guetzli, a deliciously fast and simple Filesystem-Web-CMS. For getting started it is recommended to watch the [screencast](https://www.youtube.com/watch?v=MEUrirTZ-D8) or to have a look at the provided example content and how it is displayed when running the server. For setup and design, please see the [README](../README.md).
 
 **Contents**
 
