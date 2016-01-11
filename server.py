@@ -19,7 +19,7 @@
 # along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division
-import os, codecs, json, re, math
+import os, codecs, json, re, math, logging, optparse
 import pystache
 from flask import Flask, abort, redirect, url_for, request, jsonify
 app = Flask(__name__, static_folder="./design/static", static_url_path="/choco")
@@ -30,12 +30,25 @@ _checked_path_components = {}
 _content_config = {}
 _post_filenames_by_subdirectory_and_language = {}
 _post_directory_modification_dates_by_subdirectory_and_language = {}
+_site = "basic-example"
+logging.getLogger().setLevel(logging.INFO)
+
+if __name__ != '__main__':
+	import sys
+	if len(sys.argv) > 1:
+		_site = sys.argv[1]
+	logging.info("setup completed as embedded application for site %s, passed arguments %s" %(_site, sys.argv))
+
+
 
 class NotFoundError(Exception):
 	pass
 
+class UsageError(Exception):
+	pass
+
 def get_base_path():
-	return os.path.dirname(os.path.abspath(__file__))
+	return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sites', _site)
 
 def get_template_path(template_name = "template"):
 	return os.path.join(get_base_path(), 'design', template_name) + '.html'
@@ -70,13 +83,15 @@ def render_file_content(path, ctx):
 	return pystache.render(get_file_content(path)[0], ctx)
 
 def get_content_config():
-	file_content, has_changed = get_file_content(
-		os.path.join(get_base_path(), 'content', 'config') + '.json'
-	)
+	config_path = os.path.join(get_base_path(), 'content', 'config') + '.json'
+	file_content, has_changed = get_file_content(config_path)
 	global _content_config
 	if not has_changed:
 		return _content_config
-	_content_config = json.loads(file_content)
+	try:
+		_content_config = json.loads(file_content)
+	except Exception:
+		raise UsageError("Wrong format or syntax error in %s, please compare with basic-example." %(config_path))
 	return _content_config
 
 def get_post_content(ctx, content_config, posts_path, posts_subdirectory, file_name):
@@ -167,7 +182,7 @@ def get_page_content(ctx, content_config):
 
 def get_menu(language, content_config):
 	menu = []
-	for page in content_config['pages_by_language'].get(language, []):
+	for page in content_config.get('pages_by_language', {}).get(language, []):
 		menu.append({
 			"title": page["title"],
 			"url": url_for("page_view", pagename=page["name"], language=language)
@@ -187,8 +202,7 @@ def is_valid_path_component(component):
 
 @app.errorhandler(500)
 def custom_error_handler(error):
-    response = jsonify({'message': error.description.get('message', "")})
-    return response
+    return error.description.get('message', "")
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
 @app.route('/bisc', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
@@ -200,29 +214,30 @@ def page_view(pagename, language, post_id):
 	or not is_valid_path_component(language) \
 	or not is_valid_path_component(post_id):
 		abort(403)
-	content_config = get_content_config()
-	if language == None:
-		language = request.accept_languages.best_match([
-			language_hash['id'] for language_hash in content_config['active_languages']
-		])
-	if language == None:
-		language = content_config['default_language']
-	if pagename == None:
-		pagename = content_config['default_pagename']
-	is_default_pagename = pagename == content_config['default_pagename']
-	ctx = {
-		"page_number": request.args.get('page_number', 1, type=int),
-		"pagename": pagename,
-		"language": language,
-		"menu": get_menu(language, content_config),
-		"languages": content_config['active_languages'],
-		"current_path": url_for('page_view', pagename=pagename, language=language)
-	}
-	ctx.update({
-		key: lang_dict.get(language)
-		for key, lang_dict in content_config.get("strings_by_template_reference", {}).iteritems()
-	})
 	try:
+		content_config = get_content_config()
+		active_languages = content_config.get('active_languages', [])
+		default_pagename = content_config.get('default_pagename', 'index')
+		if language == None:
+			language = request.accept_languages.best_match([
+				language_hash['id'] for language_hash in active_languages
+			])
+		if language == None:
+			language = content_config.get('default_language', 'en')
+		if pagename == None:
+			pagename = default_pagename
+		ctx = {
+			"page_number": request.args.get('page_number', 1, type=int),
+			"pagename": pagename,
+			"language": language,
+			"menu": get_menu(language, content_config),
+			"languages": content_config.get('active_languages', []),
+			"current_path": url_for('page_view', pagename=pagename, language=language)
+		}
+		ctx.update({
+			key: lang_dict.get(language)
+			for key, lang_dict in content_config.get("strings_by_template_reference", {}).iteritems()
+		})
 		if post_id != None:
 			ctx["content"] = get_post_content(
 				ctx,
@@ -233,15 +248,26 @@ def page_view(pagename, language, post_id):
 			)
 		else:
 			ctx["content"] = get_page_content(ctx, content_config)
+		return render_file_content(get_template_path(), ctx)
+	except UsageError as e:
+		abort(500, {'message': str(e)})
 	except NotFoundError as e:
-		if (post_id == None and str(e) != get_page_path(pagename, language)) \
-		or (post_id != None and str(e) != get_post_path(pagename, language, post_id)):
+		if not pagename or not language \
+		or (pagename == 'index') \
+		or (post_id == None and str(e) != get_page_path(pagename, language)) \
+		or (post_id and str(e) != get_post_path(pagename, language, post_id)):
 			abort(500, {'message': 'sorry, %s could not be found' %(str(e))})
-		elif is_default_pagename:
+		elif pagename == default_pagename:
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))
-	return render_file_content(get_template_path(), ctx)
+	raise Exception("Well that's embarassing - this should never happen.")
 
 if __name__ == "__main__":
+	optparser = optparse.OptionParser()
+	optparser.add_option("--site", dest="site")
+	(options, args) = optparser.parse_args()
+	if options.site:
+		_site = options.site
+	logging.info("setup completed as main application for site %s" %(_site))
 	app.run(debug=True)

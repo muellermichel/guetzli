@@ -27,9 +27,13 @@ working_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 log_file="${working_dir}/guetzli_log"
 pid_file="${working_dir}/uwsgi.pid"
 port=5000
+site=""
+if [[ $# > 0 ]] ; then
+	site="$1"
+fi
 
 # ========= eat the guetzli ============== #
 touch "$log_file"
 uwsgi --stop "$pid_file" && :
-sleep 0.3
-uwsgi --master --processes 4 --offload-threads 4 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --buffer-size 65536 --socket-timeout 5 --listen 5
+sleep 1
+uwsgi --master --processes 4 --offload-threads 4 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --pyargv "$site" --buffer-size 65536 --socket-timeout 5 --listen 5
