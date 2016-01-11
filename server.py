@@ -206,7 +206,9 @@ def is_valid_path_component(component):
 
 @app.errorhandler(500)
 def custom_error_handler(error):
-	return error.description.get('message', "")
+	if hasattr(error, "description")
+		return error.description.get('message', "")
+	return str(error)
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
 @app.route('/bisc', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
@@ -270,7 +272,7 @@ def page_view(pagename, language, post_id):
 @app.route("/autopull", methods=['POST'])
 def autopull_view():
 	#adapted from https://github.com/razius/github-webhook-handler
-	import ipaddress
+	import ipaddress, requests
 	request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
 	hook_blocks = requests.get('https://api.github.com/meta').json()['hooks']
 	for block in hook_blocks:

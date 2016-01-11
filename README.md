@@ -19,7 +19,7 @@ Setup
 -----
 1) Clone this repo and `cd` into it.
 
-2) `sudo pip install Flask pystache`.
+2) `sudo pip install Flask pystache ipaddress`.
 
 3) Feed guetzli to the python: `python ./server.py`.
 WARNING: This is only meant for development, do *not* use this for production purposes (as it could make your machine vulnerable). For production deployment please see [Going Live!](docs/documentation.md#going-live).
