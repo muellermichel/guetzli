@@ -1,0 +1,42 @@
+{
+	"pages_by_language": {
+		"en": [
+			{"title": "About Protogrid", "name": "001-about"},
+			{"title": "Blog", "name": "002-blog"},
+			{"title": "Events", "name": "003-events"}
+		],
+		"de": [
+			{"title": "Über Protogrid", "name": "001-about"},
+			{"title": "Blog", "name": "002-blog"},
+			{"title": "Ereignisse", "name": "003-events"},
+			{"title": "Speziell für Deutschsprechende", "name": "00Z-special"}
+		]
+	},
+	"active_languages": [
+		{"language": "English", "id":"en"},
+		{"language": "German", "id":"de"}
+	],
+	"strings_by_template_reference": {
+		"date_particle": {"en": "on", "de": "am"},
+		"tree_localized": {"en": "tree", "de": "Baum"},
+		"page_localized": {"en": "page", "de": "Seite"},
+		"of_localized": {"en": "of", "de": "von"},
+		"blog_posts_localized": {"en": "blog posts", "de": "Blog-Einträge"},
+		"to_localized": {"en": "to", "de": "bis"}
+	},
+	"active_post_types_by_pagename": {
+		"002-blog": [
+			{"posts_directory": "blog", "items_per_page": 3}
+		],
+		"001-about": [
+			{"posts_directory": "news", "items_per_page": 1}
+		]
+	},
+	"authors_by_shortname": {
+		"mmu": "Michel Müller",
+		"msc": "Mark Schmitz",
+		"jsm": "John Smith"
+	},
+	"default_pagename": "001-about",
+	"default_language": "en"
+}

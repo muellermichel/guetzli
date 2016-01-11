@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<link href='/choco/css/style.css' rel='stylesheet' media='screen'>
+	</head>
+	<body>
+		<div id="header">
+			I'm a template!
+			<ul>
+				{{#menu}}
+				<li><a href='{{ url }}'>{{ title }}</a></li>
+				{{/menu}}
+			</ul>
+			Choose Language:
+			<ul>
+				{{#languages}}
+				<li><a href='/bisc/{{ id }}/{{ pagename }}'>{{ language }}</a></li>
+				{{/languages}}
+			</ul>
+		</div>
+		<div id="body">
+		{{{ content }}}
+		<div>
+	</body>
+</html>

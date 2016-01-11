@@ -19,7 +19,7 @@
 # along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division
-import os, codecs, json, re, math, logging, optparse
+import os, codecs, json, re, math, logging
 import pystache
 from flask import Flask, abort, redirect, url_for, request, jsonify
 app = Flask(__name__, static_folder="./design/static", static_url_path="/choco")
@@ -31,15 +31,16 @@ _content_config = {}
 _post_filenames_by_subdirectory_and_language = {}
 _post_directory_modification_dates_by_subdirectory_and_language = {}
 _site = "basic-example"
+_autopull_key = None
 logging.getLogger().setLevel(logging.INFO)
 
 if __name__ != '__main__':
 	import sys
 	if len(sys.argv) > 1:
 		_site = sys.argv[1]
+	if len(sys.argv) > 2:
+		_autopull_key = sys.argv[2]
 	logging.info("setup completed as embedded application for site %s, passed arguments %s" %(_site, sys.argv))
-
-
 
 class NotFoundError(Exception):
 	pass
@@ -47,17 +48,20 @@ class NotFoundError(Exception):
 class UsageError(Exception):
 	pass
 
-def get_base_path():
-	return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sites', _site)
+def get_repo_path():
+	return os.path.dirname(os.path.abspath(__file__))
+
+def get_site_path():
+	return os.path.join(get_repo_path(), 'sites', _site)
 
 def get_template_path(template_name = "template"):
-	return os.path.join(get_base_path(), 'design', template_name) + '.html'
+	return os.path.join(get_site_path(), 'design', template_name) + '.html'
 
 def get_page_path(pagename, language):
-	return os.path.join(get_base_path(), 'content', 'pages', language, pagename) + '.html'
+	return os.path.join(get_site_path(), 'content', 'pages', language, pagename) + '.html'
 
 def get_post_path(posts_subdirectory, language, post_id=None):
-	posts_path = os.path.join(get_base_path(), 'content', 'posts', posts_subdirectory, language)
+	posts_path = os.path.join(get_site_path(), 'content', 'posts', posts_subdirectory, language)
 	if post_id == None:
 		return posts_path
 	return os.path.join(posts_path, post_id) + '.html'
@@ -83,7 +87,7 @@ def render_file_content(path, ctx):
 	return pystache.render(get_file_content(path)[0], ctx)
 
 def get_content_config():
-	config_path = os.path.join(get_base_path(), 'content', 'config') + '.json'
+	config_path = os.path.join(get_site_path(), 'content', 'config') + '.json'
 	file_content, has_changed = get_file_content(config_path)
 	global _content_config
 	if not has_changed:
@@ -202,7 +206,7 @@ def is_valid_path_component(component):
 
 @app.errorhandler(500)
 def custom_error_handler(error):
-    return error.description.get('message', "")
+	return error.description.get('message', "")
 
 @app.route('/', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
 @app.route('/bisc', defaults={'pagename': None, 'language': None, 'post_id': None}, methods=['GET'])
@@ -263,11 +267,43 @@ def page_view(pagename, language, post_id):
 			return redirect(url_for('page_view', language=language))
 	raise Exception("Well that's embarassing - this should never happen.")
 
+@app.route("/autopull", methods=['POST'])
+def autopull_view():
+	#adapted from https://github.com/razius/github-webhook-handler
+	import ipaddress
+	request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
+	hook_blocks = requests.get('https://api.github.com/meta').json()['hooks']
+	for block in hook_blocks:
+		if ipaddress.ip_address(request_ip) in ipaddress.ip_network(block):
+			break
+	else:
+		abort(403)
+	if request.headers.get('X-GitHub-Event') == "ping":
+		return json.dumps({'msg': 'Hi!'})
+	if request.headers.get('X-GitHub-Event') != "push":
+		return json.dumps({'msg': "wrong event type"})
+	payload = json.loads(request.data)
+	if _autopull_key: # Check if POST request signature is valid
+		import hmac, hashlib
+		signature = request.headers.get('X-Hub-Signature').split('=')[1]
+		mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)
+		if not hmac.compare_digest(mac.hexdigest(), signature):
+			abort(403)
+	import subprocess
+	logging.info("pulling latest repo version upon request by github webhook")
+	subp = subprocess.Popen("git pull", cwd=get_repo_path())
+	subp.wait()
+	return 'OK'
+
 if __name__ == "__main__":
+	import optparse
 	optparser = optparse.OptionParser()
 	optparser.add_option("--site", dest="site")
+	optparser.add_option("--autopull-key", dest="autopull_key")
 	(options, args) = optparser.parse_args()
 	if options.site:
 		_site = options.site
+	if options.autopull_key:
+		_autopull_key = options.autopull_key.encode() if type(_autopull_key) == unicode else options.autopull_key
 	logging.info("setup completed as main application for site %s" %(_site))
 	app.run(debug=True)
