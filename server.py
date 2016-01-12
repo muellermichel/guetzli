@@ -32,6 +32,7 @@ _post_filenames_by_subdirectory_and_language = {}
 _post_directory_modification_dates_by_subdirectory_and_language = {}
 _site = "basic-example"
 _autopull_key = None
+_autopull_branch = None
 logging.getLogger().setLevel(logging.INFO)
 
 if __name__ != '__main__':
@@ -40,6 +41,8 @@ if __name__ != '__main__':
 		_site = sys.argv[1]
 	if len(sys.argv) > 2:
 		_autopull_key = sys.argv[2]
+	if len(sys.argv) > 3:
+		_autopull_branch = sys.argv[3]
 	logging.info("setup completed as embedded application for site %s, passed arguments %s" %(_site, sys.argv))
 
 class NotFoundError(Exception):
@@ -296,7 +299,11 @@ def autopull_view():
 				abort(403)
 		import subprocess
 		logging.info("pulling latest repo version upon request by github webhook")
-		subp = subprocess.Popen("git pull", cwd=get_repo_path())
+		branch = _autopull_branch if autopull_branch else "master"
+		subp = subprocess.Popen(
+			["git", "checkout", branch, "&&", "git", "pull", "origin", branch],
+			cwd=get_repo_path()
+		)
 		subp.wait()
 	return 'OK'
 
@@ -305,10 +312,13 @@ if __name__ == "__main__":
 	optparser = optparse.OptionParser()
 	optparser.add_option("--site", dest="site")
 	optparser.add_option("--autopull-key", dest="autopull_key")
+	optparser.add_option("--autopull-branch", dest="autopull_branch")
 	(options, args) = optparser.parse_args()
 	if options.site:
 		_site = options.site
 	if options.autopull_key:
 		_autopull_key = options.autopull_key.encode() if type(_autopull_key) == unicode else options.autopull_key
+	if options.autopull_branch:
+		_autopull_branch = options.autopull_branch
 	logging.info("setup completed as main application for site %s" %(_site))
 	app.run(debug=True)
