@@ -206,7 +206,7 @@ def is_valid_path_component(component):
 
 @app.errorhandler(500)
 def custom_error_handler(error):
-	if hasattr(error, "description")
+	if hasattr(error, "description"):
 		return error.description.get('message', "")
 	return str(error)
 
