@@ -17,11 +17,15 @@ What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good
 
 Setup
 -----
-1) Clone this repo and `cd` into it.
+1) Fork this repository so you can create your own site.
 
-2) `sudo pip install Flask pystache ipaddress`.
+2) Clone your repo and `cd` into it.
 
-3) Feed guetzli to the python: `python ./server.py`.
+3) Copy `sites/basic-example` or `sites/minimal` into a new subdirectory of sites that holds the contents of your site. Commit it to your repo.
+
+4) `sudo pip install Flask pystache ipaddress`.
+
+3) Feed guetzli to the python: `python ./server.py --site [site-subdir-name]`. For additional options, see `python ./server.py --help`.
 WARNING: This is only meant for development, do *not* use this for production purposes (as it could make your machine vulnerable). For production deployment please see [Going Live!](docs/documentation.md#going-live).
 
 4) Enjoy on localhost:5000. For a production ready deployment, please see [Going Live!](docs/documentation.md#going-live)
@@ -42,15 +46,17 @@ Features
 
 2) Automatic reloading of modified resources on the next request, including `content/config.json`. You should never have to restart this server.
 
-2) Full multilanguage support. Add as many languages as you like by editing `content/config.json` and add the linked pages in language-subfolders under `content/pages` (see the example in the repo). Guetzli will match the one that best represents the client's request header and lists the other options just in case.
+3) Automatic pulling from changes on github repository (requires webhook setup, see [Going Live!](docs/documentation.md#going-live)).
 
-3) Mustache templating - in the template, pages and posts.
+4) Full multilanguage support. Add as many languages as you like by editing `content/config.json` and add the linked pages in language-subfolders under `content/pages` (see the example in the repo). Guetzli will match the one that best represents the client's request header and lists the other options just in case.
 
-4) Localized strings, defined in `content/config.json`.
+5) Mustache templating - in the template, pages and posts.
 
-5) Redirect to (localized) default page if a page can't be found.
+6) Localized strings, defined in `content/config.json`.
 
-6) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
+7) Redirect to (localized) default page if a page can't be found.
+
+8) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
 
 Documentation
 -------------
