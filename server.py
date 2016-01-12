@@ -269,7 +269,7 @@ def page_view(pagename, language, post_id):
 			return redirect(url_for('page_view', language=language))
 	raise Exception("Well that's embarassing - this should never happen.")
 
-@app.route("/autopull", methods=['POST'])
+@app.route("/autopull", methods=['GET', 'POST'])
 def autopull_view():
 	#adapted from https://github.com/razius/github-webhook-handler
 	import ipaddress, requests
@@ -279,22 +279,25 @@ def autopull_view():
 		if ipaddress.ip_address(request_ip) in ipaddress.ip_network(block):
 			break
 	else:
+		logging.info("someone tried request autopull from unsupported IP %s" %(request_ip))
 		abort(403)
 	if request.headers.get('X-GitHub-Event') == "ping":
 		return json.dumps({'msg': 'Hi!'})
 	if request.headers.get('X-GitHub-Event') != "push":
 		return json.dumps({'msg': "wrong event type"})
-	payload = json.loads(request.data)
-	if _autopull_key: # Check if POST request signature is valid
-		import hmac, hashlib
-		signature = request.headers.get('X-Hub-Signature').split('=')[1]
-		mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)
-		if not hmac.compare_digest(mac.hexdigest(), signature):
-			abort(403)
-	import subprocess
-	logging.info("pulling latest repo version upon request by github webhook")
-	subp = subprocess.Popen("git pull", cwd=get_repo_path())
-	subp.wait()
+	if request.method == 'POST':
+		payload = json.loads(request.data)
+		if _autopull_key: # Check if POST request signature is valid
+			import hmac, hashlib
+			signature = request.headers.get('X-Hub-Signature').split('=')[1]
+			mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)
+			if not hmac.compare_digest(mac.hexdigest(), signature):
+				logging.info("hash did not match for autopull" %(request_ip))
+				abort(403)
+		import subprocess
+		logging.info("pulling latest repo version upon request by github webhook")
+		subp = subprocess.Popen("git pull", cwd=get_repo_path())
+		subp.wait()
 	return 'OK'
 
 if __name__ == "__main__":
