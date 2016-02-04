@@ -63,6 +63,8 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
   * `{{ url }}` - the relative URL to the page.
 
+  * `{{ pagename_class }}` - a tag that can be used as e.g. CSS class with the name of `menu-` + filename (without `.html`) for each page linked in the menu : e.g. for `006-signup.html` the tag or CSS class will be `menu-006-signup`.
+
   * `{{ title }}` - the title as defined in the page metadata in `content/config.json`.
 
 * `{{#languages}} .. {{/languages}}` - repeats the content for each language defined in `content/config.json` --> `active_languages`. Offers the following tags for each entry:

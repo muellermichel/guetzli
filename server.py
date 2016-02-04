@@ -192,7 +192,8 @@ def get_menu(language, content_config):
 	for page in content_config.get('pages_by_language', {}).get(language, []):
 		menu.append({
 			"title": page["title"],
-			"url": url_for("page_view", pagename=page["name"], language=language)
+			"url": url_for("page_view", pagename=page["name"], language=language),
+			"pagename_class": "menu-" + page["name"]
 		})
 	return menu
 
