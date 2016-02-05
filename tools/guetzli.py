@@ -284,7 +284,7 @@ def send_mail(recipients, sender, subject, text, reply_to=None, files=[], server
 
 def compare_digest(x, y):
 	if not (isinstance(x, bytes) and isinstance(y, bytes)):
-		raise TypeError("both inputs should be instances of bytes")
+		raise TypeError("both inputs should be instances of bytes, but are %s and %s" %(type(x), type(y)))
 	if len(x) != len(y):
         	return False
         result = 0
