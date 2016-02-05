@@ -11,6 +11,8 @@ Guetzli, a deliciously fast and simple Filesystem-Web-CMS. For getting started i
 
 [Templating](#templating)
 
+[Extensions](#extensions)
+
 [HowTo](#howto)
 
 [Going Live!](#going-live)
