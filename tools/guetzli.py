@@ -36,6 +36,9 @@ class NotFoundError(Exception):
 class UsageError(Exception):
 	pass
 
+class NotAllowedError(Exception):
+	pass
+
 def set_site(site):
 	global _site
 	_site = site
@@ -190,6 +193,11 @@ def get_menu(language, content_config):
 	return menu
 
 def get_context(language, page_or_post_type, post_id=None):
+	if not is_valid_path_component(page_or_post_type) \
+	or not is_valid_path_component(language) \
+	or not is_valid_path_component(post_id):
+		raise NotAllowedError()
+
 	content_config = get_content_config()
 	active_languages = content_config.get('active_languages', [])
 	default_pagename = content_config.get('default_pagename', 'index')

@@ -21,10 +21,10 @@
 import json, logging
 from flask import Flask, abort, redirect, url_for, request
 from tools.guetzli import \
-	NotFoundError, UsageError, \
+	NotFoundError, UsageError, NotAllowedError, \
 	set_site, get_site, \
-	get_context, get_repo_path, get_template_path, get_page_path, get_post_path, \
-	render_file_content, is_valid_path_component
+	get_context, get_repo_path, get_template_path, get_page_path, get_post_path, get_content_config, \
+	render_file_content
 
 _autopull_key = None
 _autopull_branch = None
@@ -66,16 +66,14 @@ def custom_error_handler(error):
 @app.route("/bisc/<language>/<pagename>", defaults={'post_id': None}, methods = ['GET'])
 @app.route("/bisc/<language>/<pagename>/<post_id>", methods = ['GET'])
 def page_view(pagename, language, post_id):
-	if not is_valid_path_component(pagename) \
-	or not is_valid_path_component(language) \
-	or not is_valid_path_component(post_id):
-		abort(403)
 	try:
 		return render_file_content(get_template_path(), get_context(
 			language=language,
 			page_or_post_type=pagename,
 			post_id=post_id
 		))
+	except NotAllowedError:
+		abort(403)
 	except UsageError as e:
 		abort(500, {'message': str(e)})
 	except NotFoundError as e:
@@ -84,7 +82,7 @@ def page_view(pagename, language, post_id):
 		or (post_id == None and str(e) != get_page_path(pagename, language)) \
 		or (post_id and str(e) != get_post_path(pagename, language, post_id)):
 			abort(500, {'message': 'sorry, %s could not be found' %(str(e))})
-		elif pagename == default_pagename:
+		elif pagename == get_content_config().get('default_pagename', 'index'):
 			abort(404)
 		else:
 			return redirect(url_for('page_view', language=language))
