@@ -22,12 +22,13 @@
 # * Mark Schmitz
 
 import json, logging, os
-from flask import Flask, abort, redirect, url_for
+from flask import Flask, abort, redirect, url_for, request
 from tools.guetzli import \
 	NotFoundError, UsageError, NotAllowedError, \
 	set_site, get_site, \
 	get_repo_path, get_page_path, get_post_path, get_content_config, \
-	get_context_with_rendered_content, render_with_template
+	get_context_with_rendered_content, render_with_template, \
+	compare_digest
 
 _autopull_key = None
 _autopull_branch = None
@@ -126,7 +127,7 @@ def autopull_view():
 			import hmac, hashlib
 			signature = request.headers.get('X-Hub-Signature').split('=')[1]
 			mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)
-			if not hmac.compare_digest(mac.hexdigest(), signature):
+			if not compare_digest(mac.hexdigest(), signature):
 				logging.info("hash did not match for autopull" %(request_ip))
 				abort(403)
 		import subprocess

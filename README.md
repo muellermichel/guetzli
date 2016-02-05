@@ -13,6 +13,8 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
 
+Check out our screencast:
+
 [![Screencast: Writing a Unified Stencil Code](/../master/docs/Screencast_Thumbnail.png)](https://www.youtube.com/watch?v=MEUrirTZ-D8) ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
 
 Setup
@@ -66,7 +68,7 @@ All you need to know should be in the [documentation](docs/documentation.md). Ot
 
 Dependencies
 ------------
-1) Python version >= 2.7.7
+1) Python version >= 2.7.x
 
 2) Flask
 
