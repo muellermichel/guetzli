@@ -88,7 +88,7 @@ Thanks to Renato Testa, Chief DevOps [Protogrid](http://protogrid.com), for cont
 
 ToDo
 ----
-1) Forms & Mailing support
+1) Markdown support
 
 2) Dockerization
 
