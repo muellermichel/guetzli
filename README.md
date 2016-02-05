@@ -5,7 +5,7 @@ Guetzli, A Deliciously Fast and Simple CMS Based on Files
 
 Guetzli came about when we became too frustrated with Wordpress and its cesspool of plugins constantly breaking each other just to provide basic features like backups and multilingual pages. Guetzli is
 
-1) Insanely simple. It's written in less than 300 lines of Python Flask.
+1) Insanely simple. It's written in less than 500 lines of Python Flask.
 
 2) Powerful. Add as many pages and languages as you like by editing the content directory using favourite local file editor, no server restarts required. Even changing the template or the configuration doesn't require a restart. Need to rollout to production? Just git push & pull, rollout done.
 
