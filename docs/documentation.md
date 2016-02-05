@@ -117,6 +117,8 @@ def handler():
   #handler code
 ```
 
+This will give you a new URL endpoint "/my-extension" (please note the conversion of _underscore_ to -dash- for the endpoint). Using the Flask routes feature you can define arbitrarily many handlers and routes per handler for your extension. See also the [Flask routing documentation](http://flask.pocoo.org/docs/0.10/quickstart/#routing).
+
 Useful python functions found in `tools.guetzli`:
 
 * `render_with_template(context)`: Renders a html page using `design/template.html` and the given context. Use `get_context_with_rendered_content` to create the context object.
