@@ -27,8 +27,7 @@ from tools.guetzli import \
 	NotFoundError, UsageError, NotAllowedError, \
 	set_site, get_site, \
 	get_repo_path, get_page_path, get_post_path, get_content_config, \
-	get_context_with_rendered_content, render_with_template, \
-	compare_digest
+	get_context_with_rendered_content, render_with_template
 
 _autopull_key = None
 _autopull_branch = None
