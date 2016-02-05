@@ -282,3 +282,13 @@ def send_mail(recipients, sender, subject, text, reply_to=None, files=[], server
 	smtp = smtplib.SMTP(server)
 	smtp.sendmail(sender, recipients, msg.as_string() )
 	smtp.close()
+
+def compare_digest(x, y):
+	if not (isinstance(x, bytes) and isinstance(y, bytes)):
+		raise TypeError("both inputs should be instances of bytes")
+	if len(x) != len(y):
+        	return False
+        result = 0
+        for a, b in zip(x, y):
+        	result |= a ^ b
+        return result == 0
