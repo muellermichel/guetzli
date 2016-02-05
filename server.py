@@ -127,9 +127,16 @@ def autopull_view():
 			import hmac, hashlib
 			signature = request.headers.get('X-Hub-Signature').split('=')[1]
 			mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)
-			if not compare_digest(mac.hexdigest(), signature):
-				logging.info("hash did not match for autopull" %(request_ip))
-				abort(403)
+			try:
+				if not hmac.compare_digest(mac.hexdigest(), signature):
+					logging.info("hash did not match for autopull" %(request_ip))
+					abort(403)
+			except AttributeError:
+				# What compare_digest provides is protection against timing attacks,
+				# fallback to string comparison for python < 2.7.7
+				logging.warning("webhooks are used without timing attack protection available from python 2.7.7 - please update if possible")
+				if not str(mac.hexdigest()) == str(signature):
+					abort(403)
 		import subprocess
 		logging.info("pulling latest repo version upon request by github webhook")
 		branch = _autopull_branch if autopull_branch else "master"
