@@ -115,7 +115,7 @@ Guetzli automatically loads python files in `/extensions` at startup. See the pr
 @my_extension.route('/')
 def handler():
   #handler code
-'''
+```
 
 Useful python functions found in `tools.guetzli`:
 
