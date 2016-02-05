@@ -1,3 +1,23 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+# Copyright (C) 2016 Michel Müller
+
+# This file is part of Guetzli.
+
+# Guetzli is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Guetzli is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
+
 from flask import abort
 from tools.guetzli import NotAllowedError, UsageError, NotFoundError, \
 	Extension, render_with_template, get_context_with_rendered_content

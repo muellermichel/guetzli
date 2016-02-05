@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-# Copyright (C) 2014 Michel Müller
+# Copyright (C) 2016 Michel Müller
 
 # This file is part of Guetzli.
 
@@ -17,6 +17,9 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
+
+# Contributors:
+# * Mark Schmitz
 
 import json, logging, os
 from flask import Flask, abort, redirect, url_for
