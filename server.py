@@ -22,7 +22,7 @@
 # * Mark Schmitz
 
 import json, logging, os
-from flask import Flask, abort, redirect, url_for
+from flask import Flask, abort, redirect, url_for, request
 from tools.guetzli import \
 	NotFoundError, UsageError, NotAllowedError, \
 	set_site, get_site, \
