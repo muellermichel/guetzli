@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
 
-import json, logging
-from flask import Flask, abort, redirect, url_for, request
+import json, logging, os
+from flask import Flask, abort, redirect, url_for
 from tools.guetzli import \
 	NotFoundError, UsageError, NotAllowedError, \
 	set_site, get_site, \
-	get_context, get_repo_path, get_template_path, get_page_path, get_post_path, get_content_config, \
-	render_file_content
+	get_repo_path, get_page_path, get_post_path, get_content_config, \
+	get_context_with_rendered_content, render_with_template
 
 _autopull_key = None
 _autopull_branch = None
@@ -54,6 +54,19 @@ else: #Option parsing for wsgi startup
 
 app = Flask(__name__, static_folder="./sites/%s/design/static" %(get_site()), static_url_path="/choco")
 
+extensions_directory_list = os.listdir("extensions")
+for file_name in extensions_directory_list:
+	basename_and_file_ext = os.path.splitext(file_name)
+	if basename_and_file_ext[1] != ".py":
+		continue
+	if basename_and_file_ext[0] == "__init__":
+		continue
+	guetzli_extension_name = basename_and_file_ext[0]
+	guetzli_extension_endpoint = "/%s" %(guetzli_extension_name.replace('_', '-'))
+	guetzli_extension_module = __import__("extensions.%s" %(guetzli_extension_name), fromlist=["extensions"])
+	logging.info("registering %s extension with endpoint %s" %(guetzli_extension_name, guetzli_extension_endpoint))
+	app.register_blueprint(getattr(guetzli_extension_module, guetzli_extension_name), url_prefix=guetzli_extension_endpoint)
+
 @app.errorhandler(500)
 def custom_error_handler(error):
 	if hasattr(error, "description"):
@@ -67,7 +80,7 @@ def custom_error_handler(error):
 @app.route("/bisc/<language>/<pagename>/<post_id>", methods = ['GET'])
 def page_view(pagename, language, post_id):
 	try:
-		return render_file_content(get_template_path(), get_context(
+		return render_with_template(get_context_with_rendered_content(
 			language=language,
 			page_or_post_type=pagename,
 			post_id=post_id

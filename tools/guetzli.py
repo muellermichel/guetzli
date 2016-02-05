@@ -20,7 +20,7 @@
 from __future__ import division
 import os, codecs, re, math, logging, json
 import pystache
-from flask import url_for, request
+from flask import url_for, request, Blueprint
 
 _file_content_by_path = {}
 _file_modification_date_by_path = {}
@@ -38,6 +38,10 @@ class UsageError(Exception):
 
 class NotAllowedError(Exception):
 	pass
+
+class Extension(Blueprint):
+	def __init__(self, name):
+		super(Extension, self).__init__(name, "extensions.%s" %(name))
 
 def set_site(site):
 	global _site
@@ -192,7 +196,7 @@ def get_menu(language, content_config):
 		})
 	return menu
 
-def get_context(language, page_or_post_type, post_id=None):
+def get_context_with_rendered_content(language, page_or_post_type, post_id=None, additional_context={}):
 	if not is_valid_path_component(page_or_post_type) \
 	or not is_valid_path_component(language) \
 	or not is_valid_path_component(post_id):
@@ -221,6 +225,7 @@ def get_context(language, page_or_post_type, post_id=None):
 		key: lang_dict.get(language)
 		for key, lang_dict in content_config.get("strings_by_template_reference", {}).iteritems()
 	})
+	ctx.update(additional_context)
 	if post_id != None:
 		ctx["content"] = get_post_content(
 			ctx,
@@ -233,6 +238,9 @@ def get_context(language, page_or_post_type, post_id=None):
 		ctx["content"] = get_page_content(ctx, content_config)
 	return ctx
 
+def render_with_template(context):
+	return render_file_content(get_template_path(), context)
+
 def is_valid_path_component(component):
 	'''making sure that the client cannot manipulate his way to parts of the file system where we don't want him to'''
 	if not component:
@@ -243,3 +251,33 @@ def is_valid_path_component(component):
 		_checked_path_components[component] = None
 		return True
 	return False
+
+def send_mail(recipients, sender, subject, text, reply_to=None, files=[], server="localhost"):
+	import smtplib
+	from email.header import Header
+	from email.MIMEMultipart import MIMEMultipart
+	from email.MIMEBase import MIMEBase
+	from email.MIMEText import MIMEText
+	from email.Utils import COMMASPACE, formatdate
+	from email import Encoders
+	if type(recipients) != list:
+		raise UsageError("recipients must be a list")
+	if type(files) != list:
+		raise UsageError("files must be a list")
+	msg = MIMEText(text.encode('utf-8'), 'plain', 'utf-8')
+	msg['From'] = sender
+	msg['To'] = COMMASPACE.join(recipients)
+	msg['Date'] = formatdate(localtime=True)
+	msg['Subject'] = Header(subject, 'utf-8')
+	if reply_to:
+		msg.add_header('reply-to', reply_to)
+	for file in files:
+		part = MIMEBase('application', "octet-stream")
+		part.set_payload( open(file,"rb").read() )
+		Encoders.encode_base64(part)
+		part.add_header('Content-Disposition', 'attachment; filename="%s"'
+					   % os.path.basename(file))
+		msg.attach(part)
+	smtp = smtplib.SMTP(server)
+	smtp.sendmail(sender, recipients, msg.as_string() )
+	smtp.close()

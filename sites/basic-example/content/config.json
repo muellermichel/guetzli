@@ -3,7 +3,8 @@
 		"en": [
 			{"title": "About Protogrid", "name": "001-about"},
 			{"title": "Blog", "name": "002-blog"},
-			{"title": "Events", "name": "003-events"}
+			{"title": "Events", "name": "003-events"},
+			{"title": "Contact", "name": "005-contact"}
 		],
 		"de": [
 			{"title": "Über Protogrid", "name": "001-about"},
