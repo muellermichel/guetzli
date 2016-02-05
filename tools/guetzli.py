@@ -291,8 +291,8 @@ def compare_digest(x, y):
 	if not type(x) in [bytes, str] or not type(x) in [bytes, str]:
 		raise TypeError("both inputs should be instances of bytes, but are %s and %s" %(type(x), type(y)))
 	if len(x) != len(y):
-			return False
-		result = 0
-		for a, b in zip(x, y):
-			result |= a ^ b
-		return result == 0
+		return False
+	result = 0
+	for a, b in zip(x, y):
+		result |= a ^ b
+	return result == 0
