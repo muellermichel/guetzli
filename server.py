@@ -18,195 +18,42 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Guetzli. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-import os, codecs, json, re, math, logging
-import pystache
-from flask import Flask, abort, redirect, url_for, request, jsonify
-app = Flask(__name__, static_folder="./design/static", static_url_path="/choco")
+import json, logging
+from flask import Flask, abort, redirect, url_for, request
+from tools.guetzli import \
+	NotFoundError, UsageError, \
+	set_site, get_site, \
+	get_repo_path, get_template_path, get_page_path, get_post_path, \
+	get_content_config, get_post_content, get_page_content, get_menu, \
+	render_file_content, is_valid_path_component
 
-_file_content_by_path = {}
-_file_modification_date_by_path = {}
-_checked_path_components = {}
-_content_config = {}
-_post_filenames_by_subdirectory_and_language = {}
-_post_directory_modification_dates_by_subdirectory_and_language = {}
-_site = "basic-example"
 _autopull_key = None
 _autopull_branch = None
-logging.getLogger().setLevel(logging.INFO)
 
-if __name__ != '__main__':
+logging.getLogger().setLevel(logging.INFO)
+if __name__ == '__main__': #Option parsing for toy server startup
+	import optparse
+	optparser = optparse.OptionParser()
+	optparser.add_option("--site", dest="site")
+	optparser.add_option("--autopull-key", dest="autopull_key")
+	optparser.add_option("--autopull-branch", dest="autopull_branch")
+	(options, args) = optparser.parse_args()
+	if options.site:
+		set_site(options.site)
+	if options.autopull_key:
+		_autopull_key = options.autopull_key.encode() if type(_autopull_key) == unicode else options.autopull_key
+	if options.autopull_branch:
+		_autopull_branch = options.autopull_branch
+else: #Option parsing for wsgi startup
 	import sys
 	if len(sys.argv) > 1:
-		_site = sys.argv[1]
+		set_site(sys.argv[1])
 	if len(sys.argv) > 2:
 		_autopull_key = sys.argv[2]
 	if len(sys.argv) > 3:
 		_autopull_branch = sys.argv[3]
-	logging.info("setup completed as embedded application for site %s, passed arguments %s" %(_site, sys.argv))
 
-class NotFoundError(Exception):
-	pass
-
-class UsageError(Exception):
-	pass
-
-def get_repo_path():
-	return os.path.dirname(os.path.abspath(__file__))
-
-def get_site_path():
-	return os.path.join(get_repo_path(), 'sites', _site)
-
-def get_template_path(template_name = "template"):
-	return os.path.join(get_site_path(), 'design', template_name) + '.html'
-
-def get_page_path(pagename, language):
-	return os.path.join(get_site_path(), 'content', 'pages', language, pagename) + '.html'
-
-def get_post_path(posts_subdirectory, language, post_id=None):
-	posts_path = os.path.join(get_site_path(), 'content', 'posts', posts_subdirectory, language)
-	if post_id == None:
-		return posts_path
-	return os.path.join(posts_path, post_id) + '.html'
-
-def get_file_content(path):
-	if not os.path.isfile(path):
-		if path in _file_content_by_path:
-			del _file_content_by_path[path]
-		if path in _file_modification_date_by_path:
-			del _file_modification_date_by_path[path]
-		raise NotFoundError(path)
-	previous_modification_date = _file_modification_date_by_path.get(path)
-	curr_modification_date = os.path.getmtime(path)
-	if previous_modification_date and curr_modification_date <= previous_modification_date:
-		return _file_content_by_path[path], False
-	with codecs.open(path, encoding="utf-8") as f:
-		file_content = f.read()
-	_file_content_by_path[path] = file_content
-	_file_modification_date_by_path[path] = curr_modification_date
-	return file_content, True
-
-def render_file_content(path, ctx):
-	return pystache.render(get_file_content(path)[0], ctx)
-
-def get_content_config():
-	config_path = os.path.join(get_site_path(), 'content', 'config') + '.json'
-	file_content, has_changed = get_file_content(config_path)
-	global _content_config
-	if not has_changed:
-		return _content_config
-	try:
-		_content_config = json.loads(file_content)
-	except Exception:
-		raise UsageError("Wrong format or syntax error in %s, please compare with basic-example." %(config_path))
-	return _content_config
-
-def get_post_content(ctx, content_config, posts_path, posts_subdirectory, file_name):
-	match = re.match(r'(\d{4}-\d{2}-\d{2})-(\w*)-?(.*?)\.\w*', file_name)
-	author_shortname = None
-	publishing_date = None
-	if match:
-		publishing_date = match.group(1)
-		author_shortname = match.group(2)
-	author = content_config.get('authors_by_shortname', {}).get(author_shortname, author_shortname)
-	ctx.update({
-		"post_path": url_for(
-			'page_view',
-			pagename=posts_subdirectory,
-			language=ctx["language"],
-			post_id=file_name.split('.')[0]
-		),
-		"author": author,
-		"publishing_date": publishing_date
-	})
-	return render_file_content(os.path.join(posts_path, file_name), ctx)
-
-def get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number):
-	posts_path = get_post_path(posts_subdirectory, ctx['language'])
-	if not os.path.isdir(posts_path):
-		raise NotFoundError(posts_path)
-	identifier_tuple = (posts_subdirectory, ctx['language'])
-	previous_directory_modification_date = _post_directory_modification_dates_by_subdirectory_and_language.get(
-		identifier_tuple
-	)
-	curr_directory_modification_date = os.path.getmtime(posts_path)
-	file_names = None
-	if previous_directory_modification_date \
-	and curr_directory_modification_date <= previous_directory_modification_date:
-		file_names = _post_filenames_by_subdirectory_and_language.get(identifier_tuple)
-	else:
-		file_names = sorted(
-			[file_name for file_name in os.listdir(posts_path) if os.path.isfile(os.path.join(
-				posts_path,
-				file_name
-			))],
-			reverse=True
-		)
-		_post_filenames_by_subdirectory_and_language[identifier_tuple] = file_names
-		_post_directory_modification_dates_by_subdirectory_and_language[
-			identifier_tuple
-		] = curr_directory_modification_date
-	number_of_pages = int(math.ceil(len(file_names) / items_per_page))
-	start_item = (page_number - 1) * items_per_page
-	page_info = {
-		"first_item_number": start_item + 1,
-		"last_item_number": min(start_item + items_per_page, len(file_names)),
-		"number_of_items": len(file_names),
-		"number_of_pages": number_of_pages,
-		"next_page": page_number + 1 if page_number < number_of_pages else None,
-		"previous_page": page_number - 1 if page_number > 1 else None
-	}
-	page = []
-	for file_name in file_names[start_item:start_item + items_per_page]:
-		page.append({
-			"item": get_post_content(ctx, content_config, posts_path, posts_subdirectory, file_name)
-		})
-	return page, page_info
-
-def get_posts_listing(ctx, content_config, posts_subdirectory, items_per_page, page_number=1):
-	try:
-		page, page_info = get_posts_page_and_page_info(ctx, content_config, posts_subdirectory, items_per_page, page_number)
-		ctx[posts_subdirectory + "_items"] = page
-		ctx.update(page_info)
-	except NotFoundError:
-		pass
-	return render_file_content(get_template_path(posts_subdirectory + "-items"), ctx)
-
-def get_page_content(ctx, content_config):
-	for entry in content_config.get("active_post_types_by_pagename", {}).get(ctx["pagename"], []):
-		posts_subdirectory = entry["posts_directory"]
-		items_per_page = entry.get("items_per_page")
-		if not isinstance(items_per_page, int) or items_per_page <= 0:
-			items_per_page = 5
-		ctx[posts_subdirectory + "_listing"] = get_posts_listing(
-			ctx,
-			content_config,
-			posts_subdirectory,
-			items_per_page,
-			ctx["page_number"]
-		)
-	return render_file_content(get_page_path(ctx["pagename"], ctx["language"]), ctx)
-
-def get_menu(language, content_config):
-	menu = []
-	for page in content_config.get('pages_by_language', {}).get(language, []):
-		menu.append({
-			"title": page["title"],
-			"url": url_for("page_view", pagename=page["name"], language=language),
-			"pagename_class": "menu-" + page["name"]
-		})
-	return menu
-
-def is_valid_path_component(component):
-	'''making sure that the client cannot manipulate his way to parts of the file system where we don't want him to'''
-	if not component:
-		return True
-	if component in _checked_path_components:
-		return True
-	if re.match(r'^[A-Za-z0-9_-]*$', component):
-		_checked_path_components[component] = None
-		return True
-	return False
+app = Flask(__name__, static_folder="./sites/%s/design/static" %(get_site()), static_url_path="/choco")
 
 @app.errorhandler(500)
 def custom_error_handler(error):
@@ -309,17 +156,7 @@ def autopull_view():
 	return 'OK'
 
 if __name__ == "__main__":
-	import optparse
-	optparser = optparse.OptionParser()
-	optparser.add_option("--site", dest="site")
-	optparser.add_option("--autopull-key", dest="autopull_key")
-	optparser.add_option("--autopull-branch", dest="autopull_branch")
-	(options, args) = optparser.parse_args()
-	if options.site:
-		_site = options.site
-	if options.autopull_key:
-		_autopull_key = options.autopull_key.encode() if type(_autopull_key) == unicode else options.autopull_key
-	if options.autopull_branch:
-		_autopull_branch = options.autopull_branch
-	logging.info("setup completed as main application for site %s" %(_site))
+	logging.info("setup completed as main application for site %s; running on port 5000 accessible from localhost" %(get_site()))
 	app.run(debug=True)
+else:
+	logging.info("setup completed as embedded application for site %s, passed arguments %s; running on your chosen port accessible from everywhere" %(get_site(), sys.argv))
