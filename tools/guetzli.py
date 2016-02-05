@@ -274,10 +274,9 @@ def send_mail(recipients, sender, subject, text, reply_to=None, files=[], server
 		msg.add_header('reply-to', reply_to)
 	for f in files:
 		part = MIMEBase('application', "octet-stream")
-		part.set_payload( open(f,"rb").read() )
+		part.set_payload(open(f,"rb").read())
 		Encoders.encode_base64(part)
-		part.add_header('Content-Disposition', 'attachment; filename="%s"'
-					   % os.path.basename(f))
+		part.add_header('Content-Disposition', 'attachment; filename="%s"' %(os.path.basename(f)))
 		msg.attach(part)
 	smtp = smtplib.SMTP(server)
 	smtp.sendmail(sender, recipients, msg.as_string() )
