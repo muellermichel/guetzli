@@ -1,5 +1,5 @@
 import logging, json
-from flask import abort, redirect, url_for, request
+from flask import redirect, url_for, request
 from tools.guetzli import Extension, send_mail
 
 form_example = Extension('form_example')

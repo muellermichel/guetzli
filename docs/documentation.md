@@ -107,6 +107,22 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
   * `{{ previous_page }}` - page number of the previous page or `None` if not available.
 
+Extensions
+----------
+Guetzli automatically loads python files in `/extensions` at startup. See the provided examples in the repository for how to use it. At a minimum you will need to import the `Extension` class like `from tools.guetzli import Extension`, instantiate an object like `my_extension = Extension('my_extension')` (the passed name in the initializer *must* be the same as the object name) and add a flask view handler like
+
+```python
+@my_extension.route('/')
+def handler():
+  #handler code
+'''
+
+Useful python functions found in `tools.guetzli`:
+
+* `render_with_template(context)`: Renders a html page using `design/template.html` and the given context. Use `get_context_with_rendered_content` to create the context object.
+* `get_context_with_rendered_content(language, page_or_post_type, post_id=None, additional_context={})`: Creates a context object that has all the template tags defined as described in the section [Templating](#templating). `language` is the language locale as defined in the language metadata in `content/config.json`. `page_or_post_type` is the filename (without `.html`) of the page to be served or the post type. `post_id` is the post's ID in case `page_or_post_type` is a post type. `additional_context` can be used to pass additional tags - use this in order to add your own server side data sources to guetzli pages.
+* `send_mail(recipients, sender, subject, text, reply_to=None, files=[], server="localhost")`: sends a mail using `recipients` (list of e-mail addresses), `sender` (string), `subject` (string), `text` (string), `reply_to` (optional, string), `files` (list of file paths) and `server` (mail server URL, localhost if omitted).
+
 HowTo
 -----
 **Add/Change/Remove a (blog-) post**

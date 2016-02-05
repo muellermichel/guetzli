@@ -54,6 +54,8 @@ Features
 
 6) Localized strings, defined in `content/config.json`.
 
+7) Extensions - handle user submitted content, add your own datasources to guetzli.
+
 7) Redirect to (localized) default page if a page can't be found.
 
 8) All URL params are checked to only contain letters, numbers, underscores and dashes (which is also the restriction for the page filenames) - no funny business in your file system!
