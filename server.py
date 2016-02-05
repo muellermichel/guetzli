@@ -23,8 +23,7 @@ from flask import Flask, abort, redirect, url_for, request
 from tools.guetzli import \
 	NotFoundError, UsageError, \
 	set_site, get_site, \
-	get_repo_path, get_template_path, get_page_path, get_post_path, \
-	get_content_config, get_post_content, get_page_content, get_menu, \
+	get_context, get_repo_path, get_template_path, get_page_path, get_post_path, \
 	render_file_content, is_valid_path_component
 
 _autopull_key = None
@@ -72,40 +71,11 @@ def page_view(pagename, language, post_id):
 	or not is_valid_path_component(post_id):
 		abort(403)
 	try:
-		content_config = get_content_config()
-		active_languages = content_config.get('active_languages', [])
-		default_pagename = content_config.get('default_pagename', 'index')
-		if language == None:
-			language = request.accept_languages.best_match([
-				language_hash['id'] for language_hash in active_languages
-			])
-		if language == None:
-			language = content_config.get('default_language', 'en')
-		if pagename == None:
-			pagename = default_pagename
-		ctx = {
-			"page_number": request.args.get('page_number', 1, type=int),
-			"pagename": pagename,
-			"language": language,
-			"menu": get_menu(language, content_config),
-			"languages": content_config.get('active_languages', []),
-			"current_path": url_for('page_view', pagename=pagename, language=language)
-		}
-		ctx.update({
-			key: lang_dict.get(language)
-			for key, lang_dict in content_config.get("strings_by_template_reference", {}).iteritems()
-		})
-		if post_id != None:
-			ctx["content"] = get_post_content(
-				ctx,
-				content_config,
-				get_post_path(pagename, language),
-				pagename,
-				post_id + '.html'
-			)
-		else:
-			ctx["content"] = get_page_content(ctx, content_config)
-		return render_file_content(get_template_path(), ctx)
+		return render_file_content(get_template_path(), get_context(
+			language=language,
+			page_or_post_type=pagename,
+			post_id=post_id
+		))
 	except UsageError as e:
 		abort(500, {'message': str(e)})
 	except NotFoundError as e:

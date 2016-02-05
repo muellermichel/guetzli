@@ -20,7 +20,7 @@
 from __future__ import division
 import os, codecs, re, math, logging, json
 import pystache
-from flask import url_for
+from flask import url_for, request
 
 _file_content_by_path = {}
 _file_modification_date_by_path = {}
@@ -188,6 +188,42 @@ def get_menu(language, content_config):
 			"pagename_class": "menu-" + page["name"]
 		})
 	return menu
+
+def get_context(language, page_or_post_type, post_id=None):
+	content_config = get_content_config()
+	active_languages = content_config.get('active_languages', [])
+	default_pagename = content_config.get('default_pagename', 'index')
+	if language == None:
+		language = request.accept_languages.best_match([
+			language_hash['id'] for language_hash in active_languages
+		])
+	if language == None:
+		language = content_config.get('default_language', 'en')
+	if page_or_post_type == None:
+		page_or_post_type = default_pagename
+	ctx = {
+		"page_number": request.args.get('page_number', 1, type=int),
+		"pagename": page_or_post_type,
+		"language": language,
+		"menu": get_menu(language, content_config),
+		"languages": content_config.get('active_languages', []),
+		"current_path": url_for('page_view', pagename=page_or_post_type, language=language)
+	}
+	ctx.update({
+		key: lang_dict.get(language)
+		for key, lang_dict in content_config.get("strings_by_template_reference", {}).iteritems()
+	})
+	if post_id != None:
+		ctx["content"] = get_post_content(
+			ctx,
+			content_config,
+			get_post_path(page_or_post_type, language),
+			page_or_post_type,
+			post_id + '.html'
+		)
+	else:
+		ctx["content"] = get_page_content(ctx, content_config)
+	return ctx
 
 def is_valid_path_component(component):
 	'''making sure that the client cannot manipulate his way to parts of the file system where we don't want him to'''
