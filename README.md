@@ -68,7 +68,7 @@ All you need to know should be in the [documentation](docs/documentation.md). Ot
 
 Dependencies
 ------------
-1) Python version >= 2.7.7
+1) Python version >= 2.x
 
 2) Flask
 
