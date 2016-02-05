@@ -140,7 +140,12 @@ def autopull_view():
 		logging.info("pulling latest repo version upon request by github webhook")
 		branch = _autopull_branch if _autopull_branch else "master"
 		subp = subprocess.Popen(
-			["git", "checkout", branch, "&&", "git", "pull", "origin", branch],
+			["git", "checkout", branch],
+			cwd=get_repo_path()
+		)
+		subp.wait()
+		subp = subprocess.Popen(
+			["git", "pull", "origin", branch],
 			cwd=get_repo_path()
 		)
 		subp.wait()
