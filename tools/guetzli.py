@@ -253,6 +253,11 @@ def is_valid_path_component(component):
 		return True
 	return False
 
+def is_valid_email_address(visitor_email):
+	if re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', visitor_email):
+		return True
+	return False
+
 def send_mail(recipients, sender, subject, text, reply_to=None, files=[], server="localhost"):
 	import smtplib
 	from email.header import Header
