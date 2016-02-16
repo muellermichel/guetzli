@@ -18,9 +18,9 @@ What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good
 <td>Introducing Guetzli</td><td>Editing Guetzli Sites on the Web</td><td>Where the name comes from</td>
 </tr>
 <tr>
-<td>[![Introducing Guetzli](/../master/docs/Screencast_Thumbnail.png)](https://www.youtube.com/watch?v=MEUrirTZ-D8)</td>
-<td>[![Editing Guetzli Sites on the Web](/../master/docs/Screencast_Thumbnail2.png)](https://www.youtube.com/watch?v=TDUDt4QLUZc)</td>
-<td>![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)</td>
+<td><a href="https://www.youtube.com/watch?v=MEUrirTZ-D8"><img src="/../master/docs/Screencast_Thumbnail.png"></a></td>
+<td><a href="https://www.youtube.com/watch?v=TDUDt4QLUZc"><img src="/../master/docs/Screencast_Thumbnail2.png"></a></td>
+<td><img src="/../master/docs/Choco_leibniz.jpg"></td>
 </tr>
 </table>
 
