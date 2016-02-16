@@ -31,6 +31,7 @@ from tools.guetzli import \
 
 _autopull_key = None
 _autopull_branch = None
+_untrusted_autopull = False
 
 logging.getLogger().setLevel(logging.INFO)
 if __name__ == '__main__': #Option parsing for toy server startup
@@ -39,21 +40,27 @@ if __name__ == '__main__': #Option parsing for toy server startup
 	optparser.add_option("--site", dest="site")
 	optparser.add_option("--autopull-key", dest="autopull_key")
 	optparser.add_option("--autopull-branch", dest="autopull_branch")
+	optparser.add_option("--enable-untrusted-autopull", dest="untrusted_autopull", default=False, action='store_true')
 	(options, args) = optparser.parse_args()
 	if options.site:
 		set_site(options.site)
 	if options.autopull_key:
 		_autopull_key = options.autopull_key.encode() if type(_autopull_key) == unicode else options.autopull_key
-	if options.autopull_branch:
-		_autopull_branch = options.autopull_branch
+	_autopull_branch = options.autopull_branch if options.autopull_branch else "master"
+	_untrusted_autopull = options.untrusted_autopull
 else: #Option parsing for wsgi startup
 	import sys
 	if len(sys.argv) > 1:
 		set_site(sys.argv[1])
 	if len(sys.argv) > 2:
 		_autopull_key = sys.argv[2]
-	if len(sys.argv) > 3:
-		_autopull_branch = sys.argv[3]
+	_autopull_branch = sys.argv[3] if len(sys.argv) > 3 else "master"
+	_untrusted_autopull = len(sys.argv) > 4 and sys.argv[4] == "true"
+logging.info("Autopulling is set up: %s; Branch: %s; Untrusted connections allowed: %s" %(
+	_autopull_key != None or _untrusted_autopull,
+	_autopull_branch,
+	_untrusted_autopull
+))
 
 app = Flask(__name__, static_folder="./sites/%s/design/static" %(get_site()), static_url_path="/choco")
 
@@ -108,21 +115,27 @@ def page_view(pagename, language, post_id):
 def autopull_view():
 	#adapted from https://github.com/razius/github-webhook-handler
 	import ipaddress, requests
-	request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
-	hook_blocks = requests.get('https://api.github.com/meta').json()['hooks']
-	for block in hook_blocks:
-		if ipaddress.ip_address(request_ip) in ipaddress.ip_network(block):
-			break
-	else:
-		logging.info("someone tried request autopull from unsupported IP %s" %(request_ip))
-		abort(403)
+	if not _untrusted_autopull and not _autopull_key:
+		logging.warning("someone tried request autopull, but there is no autopull secret configured for this guetzli instance - aborting")
+		abort(500)
+	if not _untrusted_autopull:
+		request_ip = ipaddress.ip_address(u'{0}'.format(request.remote_addr))
+		hook_blocks = requests.get('https://api.github.com/meta').json()['hooks']
+		for block in hook_blocks:
+			if ipaddress.ip_address(request_ip) in ipaddress.ip_network(block):
+				break
+		else:
+			logging.info("someone tried request autopull from unsupported IP %s" %(request_ip))
+			abort(403)
 	if request.headers.get('X-GitHub-Event') == "ping":
+		logging.info("Received and answered Ping event from github")
 		return json.dumps({'msg': 'Hi!'})
-	if request.headers.get('X-GitHub-Event') != "push":
-		return json.dumps({'msg': "wrong event type"})
+	if request.headers.get('X-GitHub-Event') != "push" \
+	and request.headers.get('X-Gitlab-Event') != "Push Hook":
+		logging.warning("We have received a webhook, but it is the wrong event type - aborting")
+		abort(403)
 	if request.method == 'POST':
-		payload = json.loads(request.data)
-		if _autopull_key: # Check if POST request signature is valid
+		if not _untrusted_autopull and _autopull_key: # Check if POST request signature is valid
 			import hmac, hashlib
 			signature = request.headers.get('X-Hub-Signature').split('=')[1]
 			mac = hmac.new(_autopull_key, msg=request.data, digestmod=hashlib.sha1)

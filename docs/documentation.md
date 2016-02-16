@@ -204,6 +204,12 @@ Edit `design/template.html`.
 
 Going Live!
 -----------
-To feed Guetzli to many visitors, see the `run_server` script for a production ready multi-threaded execution of this CMS. You need uwsgi to use this script (`./run_server [site-name(optional, default: basic-example)] [webhook-secret(optional)] [repo-branch-to-pull(optional, default: master)]`).
+To feed Guetzli to many visitors, see the `run_server` script for a production ready multi-threaded execution of this CMS. You need uwsgi to use this script (`./run_server [site-name(optional, default: basic-example)] [webhook-secret(optional)] [repo-branch-to-pull(optional, default: master)] [autopull-untrusted]`).
 
-If you would like the server to automatically pull when your github repository changes, specify at least the [webhook secret](https://developer.github.com/webhooks/#service-hooks) as a second argument. Adapt the concurrency (`--processes` for dynamic content `--offload-threads` for static content) to your hardware. It's best to deploy it using the system process manager of your environment (systemd, upstart, docker..). If you have a production config for any of these systems, please share so others can profit from your work.
+Guetzli can be set up to automatically pull the latest repository state, triggered by github or gitlab webhooks. Use the `[Your-Server-URL]/autopull` endpoint for this matter.
+
+1) For [*github* Webhooks](https://developer.github.com/webhooks/#service-hooks), set up the webhook in the github interface for push events and specify a secret. Specify the secret as the second argument to `./run_server`.
+
+2) For *gitlab* Webhooks there is currently no way for guetzli to authenticate the trigger. Set up the webhook in the gitlab interface for push events. To start the server in this mode, run it with `./run_server [site-name] [some-dummy-secret] [repo-branch] true`, e.g. `./run_server basic-example 1234 true`.
+
+Adapt the concurrency (`--processes` for dynamic content `--offload-threads` for static content) to your hardware. It's best to deploy it using the system process manager of your environment (systemd, upstart, docker..). If you have a production config for any of these systems, please share so others can profit from your work.

@@ -39,9 +39,13 @@ autopull_branch=""
 if [[ $# > 2 ]] ; then
 	autopull_branch="$3"
 fi
+autopull_untrusted=""
+if [[ $# > 3 ]] ; then
+	autopull_untrusted="$4"
+fi
 
 # ========= eat the guetzli ============== #
 touch "$log_file"
 uwsgi --stop "$pid_file" && :
 sleep 1
-uwsgi --master --processes 4 --offload-threads 4 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --pyargv "$site $autopull_key $autopull_branch" --buffer-size 65536 --socket-timeout 5 --listen 5
+uwsgi --master --processes 4 --offload-threads 4 --http :$port --daemonize "$log_file" --pidfile "$pid_file" -w server:app --static-map /static="$working_dir/design/static" --pyargv "$site $autopull_key $autopull_branch $autopull_untrusted" --buffer-size 65536 --socket-timeout 5 --listen 5
