@@ -48,7 +48,7 @@ Features
 
 2) Automatic reloading of modified resources on the next request, including `content/config.json`. You should never have to restart this server.
 
-3) Automatic pulling from changes on github repository (requires webhook setup, see [Going Live!](docs/documentation.md#going-live)).
+3) Automatic pulling from changes on github and gitlab.com repositories (requires webhook setup, see [Going Live!](docs/documentation.md#going-live)).
 
 4) Full multilanguage support. Add as many languages as you like by editing `content/config.json` and add the linked pages in language-subfolders under `content/pages` (see the example in the repo). Guetzli will match the one that best represents the client's request header and lists the other options just in case.
 
