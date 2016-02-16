@@ -13,9 +13,16 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 What's with the name? 'Guetzli' is the Swiss German word for cookie. It's a good metaphor for this CMS, since it's small, quickly digested and comes with [biscuit](docs/documentation.md#the-biscuit) and [chocolate](docs/documentation.md#the-chocolate).
 
-Check out our screencast:
-
-[![Screencast: Writing a Unified Stencil Code](/../master/docs/Screencast_Thumbnail.png)](https://www.youtube.com/watch?v=MEUrirTZ-D8) ![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)
+<table>
+<tr>
+<td>Introducing Guetzli</td><td>Editing Guetzli Sites on the Web</td><td>Where the name comes from</td>
+</tr>
+<tr>
+<td>[![Introducing Guetzli](/../master/docs/Screencast_Thumbnail.png)](https://www.youtube.com/watch?v=MEUrirTZ-D8)</td>
+<td>[![Editing Guetzli Sites on the Web](/../master/docs/Screencast_Thumbnail2.png)](https://www.youtube.com/watch?v=TDUDt4QLUZc)</td>
+<td>![Choco Guetzli](/../master/docs/Choco_leibniz.jpg)</td>
+</tr>
+</table>
 
 Setup
 -----
