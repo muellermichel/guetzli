@@ -32,7 +32,7 @@ Setup
 
 3) Copy `sites/basic-example` or `sites/minimal` into a new subdirectory of sites that holds the contents of your site. Commit it to your repo.
 
-4) `sudo pip install Flask pystache ipaddress`.
+4) `sudo pip install Flask pystache ipaddress requests`.
 
 3) Feed guetzli to the python: `python ./server.py --site [site-subdir-name]`. For additional options, see `python ./server.py --help`.
 WARNING: This is only meant for development, do *not* use this for production purposes (as it could make your machine vulnerable). For production deployment please see [Going Live!](docs/documentation.md#going-live).
