@@ -111,7 +111,7 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
 Extensions
 ----------
-Guetzli automatically loads python files in `/extensions` at startup. See the provided examples in the repository for how to use it. At a minimum you will need to import the `Extension` class like `from tools.guetzli import Extension`, instantiate an object like `my_extension = Extension('my_extension')` (the passed name in the initializer *must* be the same as the object name) and add a flask view handler like
+Guetzli automatically loads python files in `/extensions` at startup. See the provided examples in the repository for how to use it. At a minimum you will need to import the `Extension` class like `from tools.guetzli import Extension`, instantiate an object like `my_extension = Extension('my_extension')` (the passed name in the initializer *must* be the same as the object name which *must* be the same as the filename of the extension) and add a flask view handler like
 
 ```python
 @my_extension.route('/')
