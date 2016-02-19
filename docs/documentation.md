@@ -212,4 +212,4 @@ Guetzli can be set up to automatically pull the latest repository state, trigger
 
 2) For *gitlab* Webhooks there is currently no way for guetzli to authenticate the trigger. Set up the webhook in the gitlab interface for push events. To start the server in this mode, run it with `./run_server [site-name] [some-dummy-secret] [repo-branch] true`, e.g. `./run_server basic-example 1234 true`.
 
-Adapt the concurrency (`--processes` for dynamic content `--offload-threads` for static content) to your hardware. It's best to deploy it using the system process manager of your environment (systemd, upstart, docker..). If you have a production config for any of these systems, please share so others can profit from your work.
+Adapt the concurrency to your hardware by editing the `./run_server` script (`--processes` for dynamic content `--offload-threads` for static content). It's best to deploy it using the system process manager of your environment (systemd, upstart, docker..). If you have a production config for any of these systems, please share so others can profit from your work.
