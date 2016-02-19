@@ -77,11 +77,11 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
 **The following tags are additionally available on pages for each post type that has been registered for the respective page in `content/config.json` --> `active_post_types_by_pagename`**
 
-  * `{{{ [post-type]_listing }}}` - renders a page of [post-type] in the current language. A page contains `content/config.json` --> `active_post_types_by_pagename` --> [pagename] --> [items_per_page] many posts. Each post is defined in a file under `content/posts/[post-type]/[language]` where [post-type] is given by `content/config.json` --> `active_post_types_by_pagename` --> [pagename] --> [posts_directory].
+  * `{{{ [post-type]_listing }}}` - renders a page of `[post-type]` in the current language. A page contains `content/config.json` --> `active_post_types_by_pagename` --> `[pagename]` --> `[items_per_page]` many posts. Each post is defined in a file under `content/posts/[post-type]/[language]` where `[post-type]` is given by `content/config.json` --> `active_post_types_by_pagename` --> `[pagename]` --> `[posts_directory]`.
 
 **The following tags are additionally available in posts**
 
-* `{{ author }}` - either the [author_shortname] as defined in the post filename or - if available - the author's name as defined in `content/config.json` --> `authors_by_shortname`.
+* `{{ author }}` - either the `[author_shortname]` as defined in the post filename or - if available - the author's name as defined in `content/config.json` --> `authors_by_shortname`.
 
 * `{{ post_path }}` - the relative URL of the post.
 
