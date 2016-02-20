@@ -7,7 +7,7 @@ Guetzli came about when we became too frustrated with Wordpress and its cesspool
 
 1) Insanely simple. It's written in less than 500 lines of Python Flask.
 
-2) Powerful. Add as many pages and languages as you like by editing the content directory using favourite local file editor, no server restarts required. Even changing the template or the configuration doesn't require a restart. Need to rollout to production? Just git push & pull, rollout done.
+2) Powerful. Add as many pages and languages as you like by editing the content directory using favourite local file editor, no server restarts required. Even changing the template or the configuration doesn't require a restart. Need to rollout to production? Just git push, rollout done.
 
 3) Fast. On a puny 2GB Hetzner VPS it was measured to get [345 requests per second from the outside internet and 600 requests per second from within the same network](docs/benchmark.txt), using the [multithreaded uwsgi implementation](run_server).
 
