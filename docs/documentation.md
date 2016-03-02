@@ -59,6 +59,8 @@ This section serves as a reference for templating with Guetzli. Please have a lo
 
 * `{{ current_path }}` - relative URL of the currently rendered page.
 
+* `{{ language }}` - the currently active language locale.
+
 * `{{ pagename }}` - the filename (without `.html`) of the currently served page (also serves as the page's identifier in the URL).
 
 *  `{{#menu}} .. {{/menu}}` - repeats the content for each menu entry defined in the current language in `content/config.json` --> `pages_by_language`. Offers the following tags for each entry:
