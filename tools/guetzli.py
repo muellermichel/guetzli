@@ -57,7 +57,7 @@ def get_repo_path():
 def get_site_path():
 	return os.path.join(get_repo_path(), 'sites', _site)
 
-def get_template_path(template_name = "template"):
+def get_template_path(template_name="template"):
 	return os.path.join(get_site_path(), 'design', template_name) + '.html'
 
 def get_page_path(pagename, language):
@@ -197,6 +197,24 @@ def get_menu(language, content_config):
 		})
 	return menu
 
+def get_page_title(pagename, language, content_config):
+	def first_item(list_or_none):
+		return list_or_none[0] if list_or_none else None
+
+	#TODO: Cache prefixes and titles after content config reload
+	title_prefix = first_item([
+		language_hash.get("title_prefix")
+		for language_hash in content_config.get('active_languages', [])
+		if language_hash['id'] == language
+	])
+	for page in content_config.get('pages_by_language', {}).get(language, []):
+		if page["name"] == pagename:
+			pagetitle = page["title"]
+			if title_prefix and not title_prefix in pagetitle:
+				pagetitle = "%s: %s" %(title_prefix, pagetitle)
+			return pagetitle
+	return title_prefix
+
 def get_context_with_rendered_content(language, page_or_post_type, post_id=None, additional_context={}):
 	if not is_valid_path_component(page_or_post_type) \
 	or not is_valid_path_component(language) \
@@ -214,9 +232,11 @@ def get_context_with_rendered_content(language, page_or_post_type, post_id=None,
 		language = content_config.get('default_language', 'en')
 	if page_or_post_type == None:
 		page_or_post_type = default_pagename
+
 	ctx = {
 		"page_number": request.args.get('page_number', 1, type=int),
 		"pagename": page_or_post_type,
+		"pagetitle": get_page_title(page_or_post_type, language, content_config),
 		"language": language,
 		"menu": get_menu(language, content_config),
 		"languages": content_config.get('active_languages', []),
