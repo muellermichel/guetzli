@@ -140,6 +140,14 @@ Add/Change/Remove a file under `content/posts/[post-type]/[language]` using a `Y
 
 Add/Change/Remove a file under `content/pages/[language]`. From the moment the file exists, the page is reachable under the URL `/[language]/[filename(without .html)]`.
 
+**Change the page titles**
+
+There are two settings that influence the page titles:
+
+1) Title prefixes (prepended with a ': ' separator) can be defined using a `title_prefix` setting per language in `content/config.json` --> `active_languages`.
+
+2) The page titles themselves are changed using the `title` setting per page in `content/config.json` --> `pages_by_language` --> given language.
+
 **Link a page in the menu**
 
 Add `{"title": "[Given Title]", "name":[filename(without .html)]}` under the correct language list in `content/config.json` --> `pages_by_language`.
@@ -179,8 +187,8 @@ Edit `design/template.html`.
     ]
   },
   "active_languages": [
-    {"language": "English", "id":"en"},
-    {"language": "German", "id":"de"},
+    {"language": "English", "id":"en", "title_prefix":"Example"},
+    {"language": "German", "id":"de", "title_prefix":"Beispiel"},
     {"language": "Spanish", "id":"es"}
   ],
   "strings_by_template_reference": {
