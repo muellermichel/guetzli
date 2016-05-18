@@ -144,7 +144,7 @@ Add/Change/Remove a file under `content/pages/[language]`. From the moment the f
 
 There are two settings that influence the page titles:
 
-1) Title prefixes (prepended with a ': ' separator) can be defined using a `title_prefix` setting per language in `content/config.json` --> `active_languages`.
+1) Title prefixes (prepended with a ': ' separator) can be defined using a `title_prefix` setting per language in `content/config.json` --> `active_languages`. Please note: If the page title already contains the title prefix, the prefix will *not* be prepended.
 
 2) The page titles themselves are changed using the `title` setting per page in `content/config.json` --> `pages_by_language` --> given language.
 
